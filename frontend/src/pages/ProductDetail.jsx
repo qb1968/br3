@@ -19,7 +19,7 @@ export default function ProductDetail() {
   return (
     <div className="max-w-4xl mx-auto p-6 flex flex-col md:flex-row gap-6 min-h-screen border rounded-lg p-4 shadow-md mt-10">
       <img
-        src={`https://br3-q37q.onrender.com${product.imageUrl}`}
+        src={product.imageUrl}
         alt={product.name}
         className="h-96  rounded shadow"
       />

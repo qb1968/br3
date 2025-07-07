@@ -107,27 +107,39 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 router.put("/:id", upload.single("image"), async (req, res) => {
-  const { name, category, description, price, stock, condition, color } =
-    req.body;
-  const imageUrl = req.file?.path;
+  try {
+    const { name, category, description, price, stock, condition, color } =
+      req.body;
+    const imageUrl = req.file?.path;
 
-  const updatedFields = {
-    name,
-    category,
-    description,
-    price,
-    stock,
-    condition,
-    color,
-  };
-  if (imageUrl) updatedFields.imageUrl = imageUrl;
+    const updatedFields = {
+      name,
+      category,
+      description,
+      price,
+      stock,
+      condition,
+      color,
+    };
+    if (imageUrl) updatedFields.imageUrl = imageUrl;
 
-  const product = await Product.findByIdAndUpdate(
-    req.params.id,
-    updatedFields,
-    { new: true }
-  );
-  res.json(product);
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      updatedFields,
+      { new: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json(product);
+  } catch (err) {
+    console.error("Update error:", err); // 🔥 LOG the actual error
+    res
+      .status(500)
+      .json({ message: "Failed to update product", error: err.message });
+  }
 });
 
 router.delete("/:id", async (req, res) => {
