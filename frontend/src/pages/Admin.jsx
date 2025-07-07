@@ -21,7 +21,7 @@ export default function Admin() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/categories")
+      .get("https://br3-q37q.onrender.com/api/categories")
       .then((res) => setCategories(res.data));
   }, []);
 
@@ -29,12 +29,12 @@ export default function Admin() {
 
   const addCategory = async (name) => {
     try {
-      const res = await axios.get("http://localhost:5000/api/categories");
+      const res = await axios.get("https://br3-q37q.onrender.com/api/categories");
       const exists = res.data.find(
         (c) => c.name.toLowerCase() === name.toLowerCase()
       );
       if (!exists) {
-        await axios.post("http://localhost:5000/api/categories", { name });
+        await axios.post("https://br3-q37q.onrender.com/api/categories", { name });
       }
     } catch (err) {
       console.error("Error creating category", err);
@@ -56,7 +56,7 @@ export default function Admin() {
 
   const fetchProducts = () => {
     axios
-      .get("http://localhost:5000/api/products")
+      .get("https://br3-q37q.onrender.com/api/products")
       .then((res) => setProducts(res.data));
   };
 
@@ -65,7 +65,7 @@ export default function Admin() {
   }, [showLogin]);
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:5000/api/products/${id}`);
+    await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
     fetchProducts();
   };
 
@@ -81,7 +81,7 @@ export default function Admin() {
       data.append("stock", editProduct.stock);
       if (formData.image) data.append("image", formData.image);
       await axios.put(
-        `http://localhost:5000/api/products/${editProduct._id}`,
+        `https://br3-q37q.onrender.com/api/products/${editProduct._id}`,
         data
       );
       setEditProduct(null);
@@ -90,7 +90,7 @@ export default function Admin() {
       Object.entries(formData).forEach(([key, value]) =>
         data.append(key, value)
       );
-      await axios.post("http://localhost:5000/api/products", data);
+      await axios.post("https://br3-q37q.onrender.com/api/products", data);
     }
 
     setFormData({

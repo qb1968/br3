@@ -8,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/products")
+      .get("https://br3-q37q.onrender.com/api/products")
       .then((res) => setProducts(res.data));
   }, []);
 
@@ -16,7 +16,6 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <div className="max-w-6xl mx-auto px-4 py-10 ">
         <section className="grid grid-cols-1 md:grid-cols-1 items-center gap-12 py-20 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow mb-10">
-         
           <div>
             <img
               src="/images/br1.jpg"
@@ -27,7 +26,6 @@ export default function Home() {
         </section>
         {/* Hero section */}
         <section className="text-center py-20 bg-blue-100 rounded-lg shadow mb-10">
-         
           <h1 className="text-4xl font-bold mb-4">Quality Building Supplies</h1>
           <p className="text-lg text-gray-700 ">
             🌟 Welcome to Burlington's hub for overstock building supplies! 🏠✨
@@ -42,7 +40,7 @@ export default function Home() {
             and almost all carry manufacturers warranty.
           </p>
         </section>
-        
+
         <section className="mt-16">
           <h2 className="text-3xl font-bold mb-6 text-center">
             Featured Products
@@ -54,7 +52,7 @@ export default function Home() {
                 className="bg-white p-4 rounded-lg shadow text-center"
               >
                 <img
-                  src={`http://localhost:5000${product.imageUrl}`}
+                  src={`https://br3-q37q.onrender.com${product.imageUrl}`}
                   alt={product.name}
                   className="w-full h-48 object-cover rounded"
                 />

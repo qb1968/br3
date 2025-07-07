@@ -6,7 +6,7 @@ export default function Categories() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/categories").then((res) => {
+    axios.get("https://br3-q37q.onrender.com/api/categories").then((res) => {
       console.log("Fetched categories:", res.data); // Debug
       setCategories(res.data);
     });

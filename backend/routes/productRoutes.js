@@ -48,8 +48,8 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     updatedProduct.price = price || updatedProduct.price;
     updatedProduct.stock = stock || updatedProduct.stock;
 
-    if (req.file) {
-      updatedProduct.imageUrl = `/uploads/${req.file.filename}`;
+    if (req.file && req.file.path) {
+      updatedProduct.imageUrl = req.file.path; // Cloudinary URL
     }
 
     await updatedProduct.save();

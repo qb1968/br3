@@ -9,7 +9,7 @@ export default function Products() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:5000/api/products")
+            .get("https://br3-q37q.onrender.com/api/products")
             .then((res) => setProducts(res.data));
     }, []);
 
@@ -24,7 +24,7 @@ export default function Products() {
               className="bg-white shadow rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
             >
               <img
-                src={`http://localhost:5000${product.imageUrl}`}
+                src={`https://br3-q37q.onrender.com${product.imageUrl}`}
                 alt={product.name}
                 className="w-full h-48 object-cover"
               />

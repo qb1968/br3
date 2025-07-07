@@ -7,7 +7,7 @@ export default function CategoryProducts() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/products").then((res) => {
+    axios.get("https://br3-q37q.onrender.com/api/products").then((res) => {
       const filtered = res.data.filter(
         (p) => p.category.toLowerCase() === category
       );
@@ -27,7 +27,7 @@ export default function CategoryProducts() {
             className="bg-white shadow rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
           >
             <img
-              src={`http://localhost:5000${product.imageUrl}`}
+              src={`https://br3-q37q.onrender.com${product.imageUrl}`}
               alt={product.name}
               className="w-full h-48 object-cover"
             />

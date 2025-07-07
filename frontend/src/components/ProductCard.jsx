@@ -5,7 +5,7 @@ export default function ProductCard({ product }) {
     <div className="border rounded-lg p-4 shadow-md">
       <Link to={`/product/${product._id}`}>
         <img
-          src={`http://localhost:5000${product.imageUrl}`}
+          src={`https://br3-q37q.onrender.com/${product.imageUrl}`}
           alt={product.name}
           className="w-full h-48 object-cover mb-2"
         />
