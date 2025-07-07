@@ -66,7 +66,7 @@ export default function Home() {
               to="/products"
               className="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
             >
-              See More Products
+              See All Products
             </Link>
           </div>
         </section>

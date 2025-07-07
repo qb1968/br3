@@ -29,19 +29,23 @@ export default function ProductDetail() {
         <p className="text-xl text-blue-600 font-semibold mb-4">
           ${product.price}
         </p>
-        <p className="text-gray-700 leading-relaxed">{product.description}</p>
+        <p className="text-gray-700 leading-relaxed ">
+          {product.description.split("\n").map((line, index) => (
+            <p key={index} className="mb-1">
+              {line}
+            </p>
+          ))}
+        </p>
         <p className="mt-4 text-sm text-gray-500">Stock: {product.stock}</p>
       </div>
       <div>
-      <Link
-        to="/products"
-        className="text-blue-600 hover:underline mt-2 block text-sm"
-      >
-        ← Back to Products
-      </Link>
+        <Link
+          to="/products"
+          className="text-blue-600 hover:underline mt-2 block text-sm"
+        >
+          ← Back to Products
+        </Link>
+      </div>
     </div>
-    
-    </div>
-    
   );
 }

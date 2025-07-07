@@ -175,7 +175,7 @@ export default function Admin() {
             <option key={c._id} value={c.name} />
           ))}
         </datalist>
-        
+
         <select
           value={editProduct ? editProduct.category : formData.category}
           onChange={(e) =>
@@ -201,7 +201,7 @@ export default function Admin() {
               ? setEditProduct({ ...editProduct, description: e.target.value })
               : setFormData({ ...formData, description: e.target.value })
           }
-          className="w-full px-4 py-2 border rounded-lg"
+          className="block-2 mb-1 font-medium "
         ></textarea>
         <h2>Price</h2>
         <input
