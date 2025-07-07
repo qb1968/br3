@@ -83,7 +83,7 @@ export default function Navbar() {
             </li>
             <li>
               <a
-                href="/#contact"
+                href="/contact"
                 className="block text-white hover:text-blue-600"
               >
                 Contact
