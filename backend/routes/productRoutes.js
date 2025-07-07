@@ -107,31 +107,27 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 router.put("/:id", upload.single("image"), async (req, res) => {
-  try {
-    const { name, category, description, price, stock, condition, color } =
-      req.body;
-    const imageUrl = req.file?.path;
+  const { name, category, description, price, stock, condition, color } =
+    req.body;
+  const imageUrl = req.file?.path;
 
-    const updatedFields = {
-      name,
-      category,
-      description,
-      price,
-      stock,
-      condition,
-      color,
-    };
-    if (imageUrl) updatedFields.imageUrl = imageUrl;
+  const updatedFields = {
+    name,
+    category,
+    description,
+    price,
+    stock,
+    condition,
+    color,
+  };
+  if (imageUrl) updatedFields.imageUrl = imageUrl;
 
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      updatedFields,
-      { new: true }
-    );
-    res.json(product);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+  const product = await Product.findByIdAndUpdate(
+    req.params.id,
+    updatedFields,
+    { new: true }
+  );
+  res.json(product);
 });
 
 router.delete("/:id", async (req, res) => {
