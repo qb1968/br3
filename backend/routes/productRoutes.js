@@ -67,10 +67,10 @@
 // });
 
 // module.exports = router;
-import express from "express";
-import multer from "multer";
-import Product from "../models/Product.js";
-import { cloudinary, storage } from "../utils/cloudinaryStorage.js";
+const express = require("express");
+const multer = require("multer");
+const Product = require("../models/Product");
+const { cloudinary, storage } = require("../utils/cloudinaryStorage");
 
 const router = express.Router();
 const upload = multer({ storage });
@@ -143,4 +143,4 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

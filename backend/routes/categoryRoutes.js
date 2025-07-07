@@ -23,8 +23,8 @@
 // });
 
 // module.exports = router;
-import express from "express";
-import Category from "../models/Category.js";
+const express = require("express");
+const Category = require("../models/Category");
 
 const router = express.Router();
 
@@ -48,4 +48,4 @@ router.post("/", async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
