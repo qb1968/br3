@@ -34,13 +34,19 @@ export default function Admin() {
 
     // Use editProduct fields if editing, else use formData
     const payload = editProduct || formData;
-
+    const cleanValue = (val) => {
+      if (val === "") return undefined;
+      if (!isNaN(val)) return Number(val);
+      return val;
+    };
     // Append all fields except 'image'
     Object.entries(payload).forEach(([key, val]) => {
-      if (key !== "image") {
-        data.append(key, val);
+      if (key !== "image" && val !== undefined) {
+        const cleaned = cleanValue(val);
+        if (cleaned !== undefined) data.append(key, cleaned);
       }
     });
+    
 
     // Append image only if a new one was selected in formData
     if (formData.image) {
@@ -77,6 +83,18 @@ export default function Admin() {
     } catch (error) {
       console.error("Error saving product:", error);
       alert("Failed to save product. Check console for details.");
+    }
+  };
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
+      const updated = await axios.get(
+        "https://br3-q37q.onrender.com/api/products"
+      );
+      setProducts(updated.data);
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product.");
     }
   };
   
@@ -140,7 +158,7 @@ export default function Admin() {
 
         <input
           type="number"
-          placeholder="Stock"
+          placeholder="Stock (optional)"
           value={editProduct ? editProduct.stock : formData.stock}
           onChange={(e) =>
             editProduct
@@ -150,7 +168,7 @@ export default function Admin() {
           className="border p-2 rounded"
         />
 
-        <input
+        {/* <input
           type="text"
           placeholder="Condition"
           value={editProduct ? editProduct.condition : formData.condition}
@@ -160,9 +178,9 @@ export default function Admin() {
               : setFormData({ ...formData, condition: e.target.value })
           }
           className="border p-2 rounded"
-        />
+        /> */}
 
-        <input
+        {/* <input
           type="text"
           placeholder="Color"
           value={editProduct ? editProduct.color : formData.color}
@@ -172,7 +190,7 @@ export default function Admin() {
               : setFormData({ ...formData, color: e.target.value })
           }
           className="border p-2 rounded"
-        />
+        /> */}
 
         <input
           type="file"
@@ -247,6 +265,13 @@ export default function Admin() {
                 className="text-blue-600 hover:underline"
               >
                 Edit
+              </button>
+              
+              <button
+                onClick={() => handleDelete(p._id)}
+                className="text-red-600 hover:underline"
+              >
+                Delete
               </button>
             </div>
           </li>

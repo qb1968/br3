@@ -52,7 +52,7 @@ export default function Home() {
                 className="bg-white p-4 rounded-lg shadow text-center"
               >
                 <img
-                  src={`https://br3-q37q.onrender.com${product.imageUrl}`}
+                  src={product.imageUrl}
                   alt={product.name}
                   className="w-full h-48 object-cover rounded"
                 />
