@@ -38,9 +38,9 @@ export default function Navbar() {
               </Link>
             </li> */}
             <li>
-              <a href="/contact" className="text-white hover:text-blue-600">
+              <Link to="/contact" className="text-white hover:text-blue-600">
                 Contact
-              </a>
+              </Link>
             </li>
             {/* <li>
               <Link to="/admin" className="text-white hover:text-blue-600">
@@ -82,12 +82,12 @@ export default function Navbar() {
               </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/contact"
                 className="block text-white hover:text-blue-600"
               >
                 Contact
-              </a>
+              </Link>
             </li>
             {/* <li>
               <Link
