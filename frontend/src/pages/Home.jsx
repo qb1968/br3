@@ -52,7 +52,9 @@ export default function Home() {
                 className="bg-white p-4 rounded-lg shadow text-center"
               >
                 <img
-                  src={product.imageUrl}
+                  src={`${product.imageUrl}?t=${new Date(
+                    product.updatedAt
+                  ).getTime()}`}
                   alt={product.name}
                   className="w-full h-48 object-cover rounded"
                 />

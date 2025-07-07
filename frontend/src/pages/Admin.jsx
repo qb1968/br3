@@ -5,6 +5,7 @@ export default function Admin() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [editProduct, setEditProduct] = useState(null);
+  const[newCategory,setNewCategory] = useState("")
 
   const [formData, setFormData] = useState({
     name: "",
@@ -17,6 +18,7 @@ export default function Admin() {
     image: null,
   });
 
+  // Fetch categories and products
   useEffect(() => {
     axios
       .get("https://br3-q37q.onrender.com/api/categories")
@@ -27,42 +29,45 @@ export default function Admin() {
       .then((res) => setProducts(res.data));
   }, []);
 
+
+  const handleAddCategory = async () => {
+    if (!newCategory.trim()) return;
+    try {
+      await axios.post("https://br3-q37q.onrender.com/api/categories", {
+        name: newCategory.trim(),
+      });
+      const updated = await axios.get(
+        "https://br3-q37q.onrender.com/api/categories"
+      );
+      setCategories(updated.data);
+      setNewCategory("");
+    } catch (error) {
+      console.error("Failed to add category", error);
+      alert("Could not add category");
+    }
+  };
+  // Save or update product
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const data = new FormData();
-
-    // Use editProduct fields if editing, else use formData
-    const payload = editProduct || formData;
-    const cleanValue = (val) => {
-      if (val === "") return undefined;
-      if (!isNaN(val)) return Number(val);
-      return val;
-    };
-    // Append all fields except 'image'
-    Object.entries(payload).forEach(([key, val]) => {
-      if (key !== "image" && val !== undefined) {
-        const cleaned = cleanValue(val);
-        if (cleaned !== undefined) data.append(key, cleaned);
-      }
-    });
-    
-
-    // Append image only if a new one was selected in formData
-    if (formData.image) {
-      data.append("image", formData.image);
-    }
-
     try {
+      const data = new FormData();
+      Object.entries(formData).forEach(([key, val]) => {
+        if (key !== "image") {
+          data.append(key, val);
+        }
+      });
+      if (formData.image) {
+        data.append("image", formData.image);
+      }
+
       const url = editProduct
         ? `https://br3-q37q.onrender.com/api/products/${editProduct._id}`
         : "https://br3-q37q.onrender.com/api/products";
-
       const method = editProduct ? "put" : "post";
 
       await axios[method](url, data);
 
-      // Reset form and editProduct state
+      // Reset form
       setEditProduct(null);
       setFormData({
         name: "",
@@ -75,53 +80,68 @@ export default function Admin() {
         image: null,
       });
 
-      // Refresh product list
+      // Refresh products
       const updated = await axios.get(
         "https://br3-q37q.onrender.com/api/products"
       );
       setProducts(updated.data);
     } catch (error) {
       console.error("Error saving product:", error);
-      alert("Failed to save product. Check console for details.");
+      alert("Failed to save product.");
     }
   };
+
+  // Delete product
   const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
     try {
       await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
       const updated = await axios.get(
         "https://br3-q37q.onrender.com/api/products"
       );
       setProducts(updated.data);
-    } catch (error) {
-      console.error("Error deleting product:", error);
+    } catch (err) {
+      console.error("Delete error:", err);
       alert("Failed to delete product.");
     }
   };
-  
 
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">Admin Panel</h1>
-
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">Add New Category</h2>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="New Category"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+          <button
+            type="button"
+            onClick={handleAddCategory}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Add
+          </button>
+        </div>
+      </div>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 mb-10">
         <input
           type="text"
           placeholder="Product Name"
-          value={editProduct ? editProduct.name : formData.name}
-          onChange={(e) =>
-            editProduct
-              ? setEditProduct({ ...editProduct, name: e.target.value })
-              : setFormData({ ...formData, name: e.target.value })
-          }
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className="border p-2 rounded"
         />
 
         <select
-          value={editProduct ? editProduct.category : formData.category}
+          value={formData.category}
           onChange={(e) =>
-            editProduct
-              ? setEditProduct({ ...editProduct, category: e.target.value })
-              : setFormData({ ...formData, category: e.target.value })
+            setFormData({ ...formData, category: e.target.value })
           }
           className="border p-2 rounded"
         >
@@ -134,66 +154,51 @@ export default function Admin() {
         </select>
 
         <textarea
-          placeholder="Description (use line breaks)"
-          value={editProduct ? editProduct.description : formData.description}
+          placeholder="Description"
+          value={formData.description}
           onChange={(e) =>
-            editProduct
-              ? setEditProduct({ ...editProduct, description: e.target.value })
-              : setFormData({ ...formData, description: e.target.value })
+            setFormData({ ...formData, description: e.target.value })
           }
           className="border p-2 rounded"
-        ></textarea>
+        />
 
         <input
           type="number"
           placeholder="Price"
-          value={editProduct ? editProduct.price : formData.price}
-          onChange={(e) =>
-            editProduct
-              ? setEditProduct({ ...editProduct, price: e.target.value })
-              : setFormData({ ...formData, price: e.target.value })
-          }
+          value={formData.price}
+          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
           className="border p-2 rounded"
         />
 
         <input
           type="number"
           placeholder="Stock (optional)"
-          value={editProduct ? editProduct.stock : formData.stock}
-          onChange={(e) =>
-            editProduct
-              ? setEditProduct({ ...editProduct, stock: e.target.value })
-              : setFormData({ ...formData, stock: e.target.value })
-          }
+          value={formData.stock}
+          onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
           className="border p-2 rounded"
         />
 
         {/* <input
           type="text"
           placeholder="Condition"
-          value={editProduct ? editProduct.condition : formData.condition}
+          value={formData.condition}
           onChange={(e) =>
-            editProduct
-              ? setEditProduct({ ...editProduct, condition: e.target.value })
-              : setFormData({ ...formData, condition: e.target.value })
+            setFormData({ ...formData, condition: e.target.value })
           }
           className="border p-2 rounded"
-        /> */}
+        />
 
-        {/* <input
+        <input
           type="text"
           placeholder="Color"
-          value={editProduct ? editProduct.color : formData.color}
-          onChange={(e) =>
-            editProduct
-              ? setEditProduct({ ...editProduct, color: e.target.value })
-              : setFormData({ ...formData, color: e.target.value })
-          }
+          value={formData.color}
+          onChange={(e) => setFormData({ ...formData, color: e.target.value })}
           className="border p-2 rounded"
         /> */}
 
         <input
           type="file"
+          key={formData.image ? formData.image.name : "image"}
           onChange={(e) =>
             setFormData({ ...formData, image: e.target.files[0] })
           }
@@ -259,14 +264,25 @@ export default function Admin() {
                 {p.category} - ${p.price}
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <button
-                onClick={() => setEditProduct(p)}
+                onClick={() => {
+                  setEditProduct(p);
+                  setFormData({
+                    name: p.name || "",
+                    category: p.category || "",
+                    description: p.description || "",
+                    price: p.price || "",
+                    stock: p.stock || "",
+                    condition: p.condition || "",
+                    color: p.color || "",
+                    image: null,
+                  });
+                }}
                 className="text-blue-600 hover:underline"
               >
                 Edit
               </button>
-              
               <button
                 onClick={() => handleDelete(p._id)}
                 className="text-red-600 hover:underline"
