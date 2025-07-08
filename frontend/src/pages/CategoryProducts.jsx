@@ -7,6 +7,7 @@ export default function CategoryProducts() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0); // ⬅ scroll to top on load
     axios.get("https://br3-q37q.onrender.com/api/products").then((res) => {
       const filtered = res.data.filter(
         (p) => p.category.toLowerCase() === category
@@ -44,14 +45,15 @@ export default function CategoryProducts() {
           </div>
         ))}
       </div>
-       <div>
-            <Link
-              to="/products"
-              className="text-blue-600 hover:underline mt-2 block text-sm"
-            >
-              ← Back to Products
-            </Link>
-          </div>
+      <div>
+        <Link
+          to="/products"
+          onClick={() => window.scrollTo(0, 0)} // ⬅ scroll when clicked
+          className="text-blue-600 hover:underline mt-2 block text-sm"
+        >
+          ← Back to Products
+        </Link>
+      </div>
     </div>
   );
 }

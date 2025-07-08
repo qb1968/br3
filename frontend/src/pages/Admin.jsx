@@ -212,7 +212,7 @@ export default function Admin() {
         />
         <input
           type="text"
-          placeholder="Price"
+          placeholder="Price "
           value={formData.price}
           onChange={(e) => setFormData({ ...formData, price: e.target.value })}
           className="border p-2 rounded"

@@ -1,3 +1,5 @@
+import Categories from "./Categories";
+
 export default function About() {
   return (
     <section className="bg-gray-100 py-16 px-6 md:px-12 lg:px-24 rounded-lg shadow-lg min-h-screen">
@@ -39,9 +41,11 @@ export default function About() {
               just for you.
             </p>
           </div>
+         
         </div>
+         
       </div>
-      
+      <Categories/>
     </section>
   );
 }
