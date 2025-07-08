@@ -47,15 +47,15 @@ export default function Home() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="max-w-6xl mx-auto px-4 py-10 ">
-      <section className="py-20 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow mb-10">
-  <div className="max-w-4xl mx-auto">
-    <img
-      src="/images/br1.jpg"
-      alt="Storefront Hero"
-      className="w-full h-48 sm:h-64 md:h-80 lg:h-96  rounded-xl shadow-xl"
-    />
-  </div>
-</section>
+        <section className="py-20 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow mb-10">
+          <div className="max-w-4xl mx-auto">
+            <img
+              src="/images/br1.jpg"
+              alt="Storefront Hero"
+              className="w-full h-48 sm:h-64 md:h-80 lg:h-96  rounded-xl shadow-xl"
+            />
+          </div>
+        </section>
 
         {/* Hero section */}
         <section className="text-center py-20 bg-blue-100 rounded-lg shadow mb-10">
@@ -94,24 +94,10 @@ export default function Home() {
             </Link>
           </div>
         </section>
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16 mt-16">
-          <div className="p-6 rounded-lg shadow bg-blue-100">
-            <h2 className="text-4xl font-bold mb-6 flex justify-center">
-              Why Choose Us?
-            </h2>
-            <p className="text-gray-700 mb-6 ">
-              Builders Re-Source LLC stands out for its commitment to
-              excellence, vast product range, quality assurance, expert
-              guidance, and exceptional customer service. Experience the
-              difference with us today.
-            </p>
-            <p className="text-gray-700">
-              Explore categories to discover the latest items and deals tailored
-              just for you.
-            </p>
-          </div>
+        <section className="grid grid-cols-1 md:grid-cols-1 gap-10 items-center mb-16 mt-16">
+         
 
-          <div className="bg-white p-4 ">
+          <div className="bg-blue-100 p-4 ">
             <h2 className="text-4xl font-bold mb-6 flex justify-center">
               Wide Variety
             </h2>
