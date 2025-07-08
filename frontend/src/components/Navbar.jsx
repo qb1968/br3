@@ -73,17 +73,17 @@ export default function Navbar() {
                 Products
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 to="/categories"
                 className="block text-white hover:text-blue-600"
               >
                 Categories
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
-                href="/contact"
+                to="/contact"
                 className="block text-white hover:text-blue-600"
               >
                 Contact

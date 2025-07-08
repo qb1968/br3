@@ -45,17 +45,18 @@ export default function Home() {
 
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="max-w-6xl mx-auto px-4 py-10 ">
-        <section className="grid grid-cols-1 md:grid-cols-1 items-center gap-12 py-20 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow mb-10">
-          <div>
-            <img
-              src="/images/br1.jpg"
-              alt="Storefront Hero"
-              className="w-full h-64 md:h-96 object-cover rounded-xl shadow-xl"
-            />
-          </div>
-        </section>
+      <section className="py-20 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow mb-10">
+  <div className="max-w-4xl mx-auto">
+    <img
+      src="/images/br1.jpg"
+      alt="Storefront Hero"
+      className="w-full h-48 sm:h-64 md:h-80 lg:h-96  rounded-xl shadow-xl"
+    />
+  </div>
+</section>
+
         {/* Hero section */}
         <section className="text-center py-20 bg-blue-100 rounded-lg shadow mb-10">
           <h1 className="text-4xl font-bold mb-4">Quality Building Supplies</h1>
