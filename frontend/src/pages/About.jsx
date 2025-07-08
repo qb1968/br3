@@ -11,7 +11,7 @@ export default function About() {
         </div>
 
         <div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-gray-900">
             Our Story
           </h2>
           <p className="text-base md:text-lg text-gray-700 mb-4 font-semibold">
