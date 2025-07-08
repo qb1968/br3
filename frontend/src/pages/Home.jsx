@@ -2,6 +2,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Category from "./Categories";
+// In Home.jsx or your global index.css
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+import ProductCard from "../components/ProductCard"
+
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -9,8 +15,34 @@ export default function Home() {
   useEffect(() => {
     axios
       .get("https://br3-q37q.onrender.com/api/products")
-      .then((res) => setProducts(res.data));
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error("Fetch error:", err));
   }, []);
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3, // adjust for mobile
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+    ],
+  };
+
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -45,24 +77,13 @@ export default function Home() {
           <h2 className="text-3xl font-bold mb-6 text-center">
             Featured Products
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <Slider {...settings}>
             {products.slice(0, 10).map((product) => (
-              <div
-                key={product._id}
-                className="bg-white p-4 rounded-lg shadow text-center"
-              >
-                <img
-                  src={`${product.imageUrl}?t=${new Date(
-                    product.updatedAt
-                  ).getTime()}`}
-                  alt={product.name}
-                  className="w-full h-48 object-cover rounded"
-                />
-                <h3 className="mt-4 text-xl font-semibold">{product.name}</h3>
-                <p className="text-gray-600">${product.price}</p>
+              <div key={product._id} className="px-2">
+                <ProductCard product={product} />
               </div>
             ))}
-          </div>
+          </Slider>
           <div className="text-center mt-8">
             <Link
               to="/products"
