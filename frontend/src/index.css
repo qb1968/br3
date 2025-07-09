@@ -2,14 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Body font and background */
 body {
-    @apply bg-gray-100 text-gray-800 font-sans;
-  }
-  
-  input, select, textarea, button {
-    @apply rounded border-gray-300 focus:ring-2 focus:ring-blue-400;
-  }
-  
-  nav a {
-    @apply text-blue-600 hover:text-blue-800 font-semibold;
-  }
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  background-color: #f9fafb; /* Tailwind's gray-50 */
+  color: #1f2937; /* Tailwind's gray-800 */
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* Links default style */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Remove outline only on mouse focus but keep for keyboard (accessible) */
+:focus:not(:focus-visible) {
+  outline: none;
+}

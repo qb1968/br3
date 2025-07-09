@@ -1,51 +1,39 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-
+import { useParams, Link } from "react-router-dom";
+import axios from "axios";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    axios.get(`https://br3-q37q.onrender.com/api/products`).then((res) => {
-      const found = res.data.find((p) => p._id === id);
-      setProduct(found);
-    });
+    axios
+      .get("https://br3-q37q.onrender.com/api/products")
+      .then((res) => {
+        const found = res.data.find((p) => p._id === id);
+        setProduct(found || null);
+      })
+      .catch(console.error);
   }, [id]);
 
-  if (!product) return <p>Loading...</p>;
+  if (!product) return <p className="text-center mt-10">Loading...</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 flex flex-col md:flex-row gap-6 min-h-screen border rounded-lg p-4 shadow-md mt-10">
-      <img
-        src={product.imageUrl}
-        alt={product.name}
-        className="h-96  rounded shadow"
-      />
-      <div className="flex-1">
-        <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-        <p className="text-gray-600 mb-2">Category: {product.category}</p>
-        <p className="text-xl text-blue-600 font-semibold mb-4">
-          ${product.price}
+    <div className="max-w-3xl mx-auto mt-12 p-6 border rounded shadow min-h-screen">
+      <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
+      <img src={product.imageUrl} alt={product.name} className="mb-4 rounded" />
+      <p>Category: {product.category}</p>
+      <p>Price: ${product.price ?? "N/A"}</p>
+      <p>{product.description}</p>
+       {/* Only show stock if stock > 0 */}
+      {product.stock > 0 && (
+        <p className="text-sm text-gray-500 italic">
+          Stock available: {product.stock}
         </p>
-        <p className="text-gray-700 leading-relaxed ">
-          {product.description.split("\n").map((line, index) => (
-            <p key={index} className="mb-1">
-              {line}
-            </p>
-          ))}
-        </p>
-        <p className="mt-4 text-sm text-gray-500">Stock: {product.stock}</p>
-      </div>
-      <div>
-        <Link
-          to="/products"
-          className="text-blue-600 hover:underline mt-2 block text-sm"
-        >
-          ← Back to Products
-        </Link>
-      </div>
+      )}
+      <Link to="/products" className="text-blue-600 hover:underline mt-4 block">
+        ← Back to Products
+      </Link>
     </div>
   );
 }

@@ -5,6 +5,8 @@ import { useParams, Link } from "react-router-dom";
 export default function CategoryProducts() {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 8;
 
   useEffect(() => {
     window.scrollTo(0, 0); // ⬅ scroll to top on load
@@ -15,6 +17,15 @@ export default function CategoryProducts() {
       setProducts(filtered);
     });
   }, [category]);
+  const totalPages = Math.ceil(products.length / productsPerPage);
+  const indexOfLast = currentPage * productsPerPage;
+  const indexOfFirst = indexOfLast - productsPerPage;
+  const currentProducts = products.slice(indexOfFirst, indexOfLast);
+
+  const goToPage = (page) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setCurrentPage(page);
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-6 min-h-screen">
@@ -22,7 +33,7 @@ export default function CategoryProducts() {
         {category.charAt(0).toUpperCase() + category.slice(1)}
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
+        {currentProducts.map((product) => (
           <div
             key={product._id}
             className="bg-white shadow rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
@@ -44,7 +55,26 @@ export default function CategoryProducts() {
             </div>
           </div>
         ))}
+       
       </div>
+ {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-12 flex-wrap gap-3">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => goToPage(i + 1)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all ${
+                  currentPage === i + 1
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        )}
       <div>
         <Link
           to="/products"
