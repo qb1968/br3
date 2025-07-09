@@ -3,10 +3,15 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Categories from "./Categories";
 import BackToTop from "../components/BackToTop";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Products() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
   const [products, setProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const initialPage = parseInt(queryParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const productsPerPage = 10;
 
   useEffect(() => {
@@ -23,6 +28,7 @@ export default function Products() {
   const goToPage = (page) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setCurrentPage(page);
+    navigate(`/products?page=${page}`);
   };
 
   return (
@@ -56,7 +62,7 @@ export default function Products() {
                 ${product.price}
               </p>
               <Link
-                to={`/product/${product._id}`}
+                to={`/product/${product._id}?page=${currentPage}`}
                 className="mt-auto inline-block bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >
                 View Details

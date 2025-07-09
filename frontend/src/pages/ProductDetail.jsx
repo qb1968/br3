@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const page = queryParams.get("page") || 1;
+  const initialPage = parseInt(queryParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
 
   useEffect(() => {
     axios
@@ -25,8 +32,8 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen">
-      <div className="flex flex-col md:flex-row gap-10 bg-white shadow-lg rounded-xl p-6">
+    <div className="max-w-5xl mx-auto px-4 py-12 min-h-screen">
+      <div className="bg-white rounded-xl shadow-md p-6 flex flex-col md:flex-row gap-8">
         {/* Product Image */}
         <div className="md:w-1/2">
           <div className="flex gap-4 overflow-x-auto">
@@ -35,29 +42,29 @@ export default function ProductDetail() {
                 key={index}
                 src={url}
                 alt={`Product ${index}`}
-                className="w-full h-auto object-cover rounded shadow-md"
+                className="rounded shadow object-cover w-full h-auto max-h-max"
               />
             ))}
           </div>
         </div>
 
         {/* Product Info */}
-        <div className="md:w-1/2 flex flex-col justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-4">
-              {product.name}
-            </h1>
-            <p className="text-gray-600 mb-2 text-sm uppercase tracking-wide">
-              Category: {product.category}
-            </p>
-            <p className="text-blue-600 text-xl font-semibold mb-4">
-              ${product.price}
-            </p>
-            <div className="text-gray-700 leading-relaxed space-y-2">
-              {product.description.split("\n").map((line, i) => (
-                <p key={i}>{line}</p>
-              ))}
-            </div>
+        <div className="md:w-1/2">
+          <h1 className="text-2xl font-bold mb-4 text-gray-800">
+            {product.name}
+          </h1>
+          <p className="text-sm uppercase text-gray-500 mb-1">
+            {product.category}
+          </p>
+          <p className="text-xl font-semibold text-blue-600 mb-3">
+            ${product.price}
+          </p>
+          <div className="text-gray-700 mb-4">
+            {product.description.split("\n").map((line, i) => (
+              <p key={i} className="mb-2">
+                {line}
+              </p>
+            ))}
           </div>
 
           {/* Stock Info */}
@@ -72,8 +79,8 @@ export default function ProductDetail() {
           {/* Back Link */}
           <div className="mt-8">
             <Link
-              to="/products"
-              className="inline-block text-blue-600 hover:underline text-sm"
+              to={`/products?page=${page}`}
+              className="inline-block text-blue-800 hover:underline text-md"
             >
               ← Back to Products
             </Link>

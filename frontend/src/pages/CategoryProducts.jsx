@@ -89,7 +89,7 @@ export default function CategoryProducts() {
         <Link
           to="/products"
           onClick={() => window.scrollTo(0, 0)}
-          className="inline-block text-blue-600 hover:underline text-sm"
+          className="inline-block text-blue-800 hover:underline text-md"
         >
           ← Back to All Products
         </Link>

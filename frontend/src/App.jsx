@@ -12,10 +12,12 @@ import Footer from "./components/Footer";
 import Contact from "./pages/Contact"
 import Products from "./pages/Products";
 import Navbar from "./components/Navbar"
+import ScrollToTop from "./components/ScrollToTop";
 const App = () => {
   return (
     <div>
       <Navbar />
+      <ScrollToTop/>
     <Routes>
        
       <Route path="/" element={<Home />}/>
