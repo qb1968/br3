@@ -201,7 +201,7 @@ export default function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="mb-16">
+      <section className="bg-white p-8 rounded-xl shadow-md mb-16">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Featured Products
         </h2>

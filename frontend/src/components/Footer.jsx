@@ -68,7 +68,7 @@ export default function Footer() {
       {/* Bottom Text */}
       <div className="mt-12 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
         &copy; {new Date().getFullYear()}{" "}
-        <Link to="https://allwebcon.com" target="_blank" className="underline">
+        <Link to="https://allwebcon.com" target="_blank" className="text-white hover:text-blue-500 underline">
           Allison Web Consultants
         </Link>{" "}
         All rights reserved.
