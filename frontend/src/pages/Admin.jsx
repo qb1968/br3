@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import BackToTop from "../components/BackToTop";
 
 export default function Admin() {
   const [products, setProducts] = useState([]);
@@ -318,6 +319,7 @@ export default function Admin() {
           </li>
         ))}
       </ul>
+      <BackToTop />
     </div>
   );
 }
