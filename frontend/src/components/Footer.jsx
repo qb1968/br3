@@ -48,25 +48,30 @@ export default function Footer() {
           <h4 className="text-white font-semibold mb-4">Contact</h4>
           <p className="text-sm mb-2">4307 Sartin Rd, Burlington, NC</p>
           <p className="text-sm mb-2">Phone: (555) 123-4567</p>
-          <p className="text-sm">Email: info@buildersresource.com</p>
+          <p className="text-sm">Email: builders.resource336@gmail.com</p>
         </div>
 
         {/* Social Links */}
         <div>
           <h4 className="text-white font-semibold mb-4">Follow Us</h4>
           <div className="flex space-x-4 text-xl">
-            <a href="#" className="hover:text-white">
+            <a
+              href="https://www.facebook.com/profile.php?id=61563132742199" target="_blank"
+              className="hover:text-white"
+            >
               <FaFacebookF />
             </a>
-            
           </div>
         </div>
       </div>
 
       {/* Bottom Text */}
       <div className="mt-12 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
-        &copy; {new Date().getFullYear()} <Link to="https://allwebcon.com"target="_blank" className="underline">Allison Web Consultants</Link> All rights
-        reserved.
+        &copy; {new Date().getFullYear()}{" "}
+        <Link to="https://allwebcon.com" target="_blank" className="underline">
+          Allison Web Consultants
+        </Link>{" "}
+        All rights reserved.
       </div>
     </footer>
   );
