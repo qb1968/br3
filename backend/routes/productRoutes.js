@@ -67,6 +67,91 @@
 // });
 
 // module.exports = router;
+// const express = require("express");
+// const multer = require("multer");
+// const Product = require("../models/Product");
+// const { cloudinary, storage } = require("../utils/cloudinaryStorage");
+
+// const router = express.Router();
+// const upload = multer({ storage });
+
+// router.get("/", async (req, res) => {
+//   try {
+//     const products = await Product.find();
+//     res.json(products);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
+// router.post("/", upload.single("image"), async (req, res) => {
+//   try {
+//     const { name, category, description, price, stock, condition, color } =
+//       req.body;
+//     const imageUrl = req.file?.path;
+//     const product = new Product({
+//       name,
+//       category,
+//       description,
+//       price,
+//       stock,
+//       condition,
+//       color,
+//       imageUrl,
+//     });
+//     await product.save();
+//     res.status(201).json(product);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// });
+
+// router.put("/:id", upload.single("image"), async (req, res) => {
+//   try {
+//     const { name, category, description, price, stock, condition, color } =
+//       req.body;
+//     const imageUrl = req.file?.path;
+
+//     const updatedFields = {
+//       name,
+//       category,
+//       description,
+//       price,
+//       stock,
+//       condition,
+//       color,
+//     };
+//     if (imageUrl) updatedFields.imageUrl = imageUrl;
+
+//     const product = await Product.findByIdAndUpdate(
+//       req.params.id,
+//       updatedFields,
+//       { new: true }
+//     );
+
+//     if (!product) {
+//       return res.status(404).json({ message: "Product not found" });
+//     }
+
+//     res.json(product);
+//   } catch (err) {
+//     console.error("Update error:", err); // 🔥 LOG the actual error
+//     res
+//       .status(500)
+//       .json({ message: "Failed to update product", error: err.message });
+//   }
+// });
+
+// router.delete("/:id", async (req, res) => {
+//   try {
+//     await Product.findByIdAndDelete(req.params.id);
+//     res.json({ message: "Product deleted" });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
+// module.exports = router;
 const express = require("express");
 const multer = require("multer");
 const Product = require("../models/Product");
@@ -75,6 +160,7 @@ const { cloudinary, storage } = require("../utils/cloudinaryStorage");
 const router = express.Router();
 const upload = multer({ storage });
 
+// GET all products
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find();
@@ -84,11 +170,13 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", upload.single("image"), async (req, res) => {
+// POST new product with multiple images
+router.post("/", upload.array("images", 10), async (req, res) => {
   try {
     const { name, category, description, price, stock, condition, color } =
       req.body;
-    const imageUrl = req.file?.path;
+    const images = req.files.map((file) => file.path); // cloudinary URLs
+
     const product = new Product({
       name,
       category,
@@ -97,8 +185,9 @@ router.post("/", upload.single("image"), async (req, res) => {
       stock,
       condition,
       color,
-      imageUrl,
+      images,
     });
+
     await product.save();
     res.status(201).json(product);
   } catch (err) {
@@ -106,12 +195,11 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
-router.put("/:id", upload.single("image"), async (req, res) => {
+// PUT update product and optionally images
+router.put("/:id", upload.array("images", 10), async (req, res) => {
   try {
     const { name, category, description, price, stock, condition, color } =
       req.body;
-    const imageUrl = req.file?.path;
-
     const updatedFields = {
       name,
       category,
@@ -121,7 +209,10 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       condition,
       color,
     };
-    if (imageUrl) updatedFields.imageUrl = imageUrl;
+
+    if (req.files?.length > 0) {
+      updatedFields.images = req.files.map((file) => file.path);
+    }
 
     const product = await Product.findByIdAndUpdate(
       req.params.id,
@@ -135,13 +226,13 @@ router.put("/:id", upload.single("image"), async (req, res) => {
 
     res.json(product);
   } catch (err) {
-    console.error("Update error:", err); // 🔥 LOG the actual error
     res
       .status(500)
       .json({ message: "Failed to update product", error: err.message });
   }
 });
 
+// DELETE a product
 router.delete("/:id", async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
