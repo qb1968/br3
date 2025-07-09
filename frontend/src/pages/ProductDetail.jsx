@@ -28,12 +28,17 @@ export default function ProductDetail() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen">
       <div className="flex flex-col md:flex-row gap-10 bg-white shadow-lg rounded-xl p-6">
         {/* Product Image */}
-        <div className="md:w-1/2 flex justify-center">
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="rounded-lg shadow-md object-cover h-96 w-full md:w-auto"
-          />
+        <div className="md:w-1/2">
+          <div className="flex gap-4 overflow-x-auto">
+            {product.images?.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Product ${index}`}
+                className="w-full h-auto object-cover rounded shadow-md"
+              />
+            ))}
+          </div>
         </div>
 
         {/* Product Info */}
@@ -61,9 +66,7 @@ export default function ProductDetail() {
               In Stock: {product.stock}
             </p>
           ) : (
-            <p className="mt-6 text-sm text-red-500 font-medium">
-              
-            </p>
+            <p className="mt-6 text-sm text-red-500 font-medium"></p>
           )}
 
           {/* Back Link */}

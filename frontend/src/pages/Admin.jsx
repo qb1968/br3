@@ -15,7 +15,7 @@ export default function Admin() {
     stock: "",
     condition: "",
     color: "",
-    image: null,
+    images: [], // array of File objects
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,9 +54,7 @@ export default function Admin() {
       await axios.post("https://br3-q37q.onrender.com/api/categories", {
         name: newCategory.trim(),
       });
-      const updated = await axios.get(
-        "https://br3-q37q.onrender.com/api/categories"
-      );
+      const updated = await axios.get("https://br3-q37q.onrender.com/api/categories");
       setCategories(updated.data);
       setNewCategory("");
     } catch (error) {
@@ -69,17 +67,33 @@ export default function Admin() {
     e.preventDefault();
     try {
       const data = new FormData();
+
+      // Append other form fields
       Object.entries(formData).forEach(([key, val]) => {
-        if (key !== "image") data.append(key, val);
+        if (key !== "images") {
+          if (val !== null && val !== undefined) {
+            data.append(key, val);
+          }
+        }
       });
-      if (formData.image) data.append("image", formData.image);
+
+      // Append multiple images files
+      if (formData.images && formData.images.length > 0) {
+        Array.from(formData.images).forEach((file) => {
+          data.append("images", file);
+        });
+      }
 
       const url = editProduct
         ? `https://br3-q37q.onrender.com/api/products/${editProduct._id}`
         : "https://br3-q37q.onrender.com/api/products";
       const method = editProduct ? "put" : "post";
 
-      await axios[method](url, data);
+      await axios[method](url, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       setEditProduct(null);
       setFormData({
@@ -90,12 +104,10 @@ export default function Admin() {
         stock: "",
         condition: "",
         color: "",
-        image: null,
+        images: [],
       });
 
-      const updated = await axios.get(
-        "https://br3-q37q.onrender.com/api/products"
-      );
+      const updated = await axios.get("https://br3-q37q.onrender.com/api/products");
       setProducts(updated.data);
     } catch (error) {
       console.error("Error saving product:", error);
@@ -108,9 +120,7 @@ export default function Admin() {
       return;
     try {
       await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
-      const updated = await axios.get(
-        "https://br3-q37q.onrender.com/api/products"
-      );
+      const updated = await axios.get("https://br3-q37q.onrender.com/api/products");
       setProducts(updated.data);
     } catch (err) {
       console.error("Delete error:", err);
@@ -225,28 +235,42 @@ export default function Admin() {
           onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
           className="border p-2 rounded"
         />
+       
+        
         <input
           type="file"
-          key={formData.image ? formData.image.name : "image"}
-          onChange={(e) =>
-            setFormData({ ...formData, image: e.target.files[0] })
-          }
+          multiple
+          onChange={(e) => setFormData({ ...formData, images: e.target.files })}
           className="border p-2 rounded"
         />
-        {formData.image && (
-          <img
-            src={URL.createObjectURL(formData.image)}
-            alt="Preview"
-            className="w-32 h-32 object-cover rounded border"
-          />
+
+        {/* Show previews of new images */}
+        <div className="flex gap-3 flex-wrap mt-2">
+          {formData.images &&
+            Array.from(formData.images).map((file, i) => (
+              <img
+                key={i}
+                src={URL.createObjectURL(file)}
+                alt={`preview-${i}`}
+                className="w-32 h-32 object-cover rounded border"
+              />
+            ))}
+        </div>
+
+        {/* Show existing images if editing and no new images selected */}
+        {editProduct && editProduct.images && !formData.images.length && (
+          <div className="flex gap-3 flex-wrap mt-2">
+            {editProduct.images.map((imgUrl, i) => (
+              <img
+                key={i}
+                src={imgUrl}
+                alt={`existing-${i}`}
+                className="w-32 h-32 object-cover rounded border"
+              />
+            ))}
+          </div>
         )}
-        {editProduct?.imageUrl && !formData.image && (
-          <img
-            src={editProduct.imageUrl}
-            alt="Existing"
-            className="w-32 h-32 object-cover rounded border"
-          />
-        )}
+
         <button
           type="submit"
           className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
@@ -266,7 +290,7 @@ export default function Admin() {
                 stock: "",
                 condition: "",
                 color: "",
-                image: null,
+                images: [],
               });
             }}
             className="bg-gray-500 text-white py-2 rounded hover:bg-gray-600"
@@ -302,7 +326,7 @@ export default function Admin() {
                     stock: p.stock || "",
                     condition: p.condition || "",
                     color: p.color || "",
-                    image: null,
+                    images: [], // start empty for new uploads
                   });
                 }}
                 className="text-blue-600 hover:underline"
