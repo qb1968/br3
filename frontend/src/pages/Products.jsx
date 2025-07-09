@@ -30,22 +30,22 @@ export default function Products() {
       {/* Categories */}
       <Categories />
 
-      {/* Title */}
-      <h2 className="text-4xl font-bold mb-10 text-center text-gray-900">
+      {/* Page Heading */}
+      <h1 className="text-4xl font-extrabold text-center text-gray-900 mt-8 mb-12">
         All Products
-      </h2>
+      </h1>
 
-      {/* Product Grid */}
+      {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {currentProducts.map((product) => (
           <div
             key={product._id}
-            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 flex flex-col"
+            className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col overflow-hidden"
           >
             <img
               src={product.imageUrl}
               alt={product.name}
-              className="w-full h-48 object-cover rounded-t-2xl"
+              className="w-full h-48 object-cover"
             />
             <div className="p-5 flex flex-col flex-grow">
               <h3 className="text-lg font-semibold text-gray-800 mb-1">
@@ -57,7 +57,7 @@ export default function Products() {
               </p>
               <Link
                 to={`/product/${product._id}`}
-                className="mt-auto inline-block bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                className="mt-auto inline-block bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >
                 View Details
               </Link>
@@ -73,9 +73,9 @@ export default function Products() {
             <button
               key={i}
               onClick={() => goToPage(i + 1)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all ${
+              className={`px-4 py-2 rounded-md text-sm font-medium transition ${
                 currentPage === i + 1
-                  ? "bg-blue-600 text-white"
+                  ? "bg-blue-600 text-white shadow"
                   : "bg-gray-200 text-gray-800 hover:bg-gray-300"
               }`}
             >
@@ -85,7 +85,7 @@ export default function Products() {
         </div>
       )}
 
-      {/* Back to Top Button */}
+      {/* Back to Top */}
       <BackToTop />
     </div>
   );

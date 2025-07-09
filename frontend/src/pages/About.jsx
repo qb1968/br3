@@ -1,51 +1,82 @@
-import Categories from "./Categories";
+import React, { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default function About() {
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   return (
-    <section className="bg-gray-100 py-16 px-6 md:px-12 lg:px-24 rounded-lg shadow-lg min-h-screen">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div>
-          <img
-            src="/images/br2.jpg"
-            alt="About Us"
-            className="w-full h-64 sm:h-80 md:h-96 object-cover rounded-xl shadow-xl"
-          />
-        </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 min-h-screen">
+      {/* Header Section */}
+      <section
+        className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl shadow-lg p-10 text-center"
+        data-aos="fade-up"
+        data-aos-delay="400"
+      >
+        <h1 className="text-5xl font-extrabold mb-4">About Us</h1>
+        <p className="text-lg max-w-3xl mx-auto leading-relaxed">
+          At Builders Re-Source, we’re more than just suppliers — we’re your
+          partners in construction and renovation. With deep industry
+          relationships and access to premium overstock inventory, we offer
+          homeowners and contractors affordable solutions without compromising
+          quality.
+        </p>
+      </section>
 
-        <div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-gray-900">
-            Our Story
-          </h2>
-          <p className="text-base md:text-lg text-gray-700 mb-4 font-semibold">
-            Builders Re-Source LLC is your go-to destination for overstock
-            building supplies. With a rich history of providing high-quality
-            materials at unbeatable prices, we have established ourselves as a
-            trusted source in the industry.
-          </p>
-          <p className="text-base md:text-lg text-gray-700 font-semibold mb-6">
-            Our commitment to excellence and customer satisfaction sets us apart
-            as a reliable partner for all your building needs.
-          </p>
+      {/* Core Info Section */}
+      <section
+        className="mt-16 bg-white p-8 rounded-xl shadow-md"
+        data-aos="fade-up"
+        data-aos-delay="600"
+      >
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Our Mission
+        </h2>
+        <p className="text-gray-700 max-w-4xl mx-auto leading-relaxed text-center">
+          Our mission is to help you build better for less. We aim to bridge the
+          gap between quality construction materials and affordable pricing by
+          sourcing surplus, discontinued, and overstock products from
+          manufacturers you trust. Whether you're remodeling a home, replacing
+          windows, or starting a new build, our team is here to support your
+          vision.
+        </p>
+      </section>
 
-          <div className="p-6 rounded-xl shadow bg-blue-100">
-            <h3 className="text-2xl font-bold mb-4 text-center text-blue-800">
-              Why Choose Us?
-            </h3>
-            <p className="text-gray-700 mb-4">
-              Builders Re-Source LLC stands out for its commitment to
-              excellence, vast product range, quality assurance, expert
-              guidance, and exceptional customer service.
-            </p>
-            <p className="text-gray-700">
-              Explore categories to discover the latest items and deals tailored
-              just for you.
-            </p>
-          </div>
-         
-        </div>
-         
-      </div>
-      <Categories/>
-    </section>
+      {/* Values Section */}
+      <section
+        className="mt-16 bg-blue-50 p-8 rounded-xl shadow-md"
+        data-aos="fade-up"
+        data-aos-delay="800"
+      >
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          What Sets Us Apart
+        </h2>
+        <ul className="space-y-4 text-gray-700 max-w-3xl mx-auto text-lg">
+          <li>✔️ Expert advice and customer-first service</li>
+          <li>✔️ Access to premium building materials</li>
+          <li>✔️ Affordable pricing from overstock and surplus</li>
+          <li>✔️ Inventory backed by manufacturers’ warranties</li>
+        </ul>
+      </section>
+
+      {/* Call to Action */}
+      <section
+        className="mt-20 text-center"
+        data-aos="fade-up"
+        data-aos-delay="1000"
+      >
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          Ready to start your next project?
+        </h2>
+        <a
+          href="/contact"
+          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+        >
+          Contact Us
+        </a>
+      </section>
+    </div>
   );
 }

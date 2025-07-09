@@ -121,6 +121,9 @@ import ProductCard from "../components/ProductCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -145,6 +148,13 @@ export default function Home() {
       { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
+  useEffect(() => {
+    AOS.init({
+      duration: 800, // animation duration in ms
+      once: true, // animate only once
+      offset: 100, // offset from the trigger point
+    });
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -152,13 +162,21 @@ export default function Home() {
       <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl overflow-hidden shadow-xl mb-16">
         <div
           className="absolute inset-0 opacity-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/br1.jpg')" }}
+          style={{ backgroundImage: "url('/images/newbr1.jpeg')" }}
         />
         <div className="relative p-12 sm:p-20 text-white text-center">
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
+          <h1
+            className="text-4xl sm:text-5xl font-extrabold mb-4"
+            data-aos="fade-down"
+            data-aos-delay="200"
+          >
             Quality Building Supplies
           </h1>
-          <p className="text-lg sm:text-xl max-w-3xl mx-auto">
+          <p
+            className="text-lg sm:text-xl max-w-3xl mx-auto"
+            data-aos="fade-up"
+            data-aos-delay="400"
+          >
             🛠️ Burlington's trusted source for overstock building supplies.
             High-quality materials at unbeatable prices – from windows to
             siding, we’ve got your next project covered.
@@ -206,7 +224,7 @@ export default function Home() {
 
       {/* Highlight Section */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-10 bg-blue-50 p-10 rounded-xl shadow mb-20">
-        <div>
+        <div data-aos="fade-right">
           <h3 className="text-2xl font-bold text-gray-800 mb-4">
             Wide Variety
           </h3>
@@ -216,7 +234,7 @@ export default function Home() {
             updated regularly, so check back often or stop in today!
           </p>
         </div>
-        <div>
+        <div data-aos="fade-left">
           <h3 className="text-2xl font-bold text-gray-800 mb-4">
             Guaranteed Quality
           </h3>
