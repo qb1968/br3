@@ -18,15 +18,30 @@ export default function Contact() {
           <h2 className="text-2xl font-bold mb-8 text-gray-800 text-center">
             Send Us a Message
           </h2>
-          <form className="space-y-6">
+          <form
+            action="https://submit-form.com/kbExC8Cje"
+            method="POST"
+            className="space-y-6"
+          >
+            {/* Optional: disable CAPTCHA */}
+            <input type="hidden" name="_captcha" value="false" />
+            {/* Hidden field to prevent spam */}
+            <input type="hidden" name="_captcha" value="false" />
+            <input
+              type="hidden"
+              name="_redirect"
+              value="https://br3-jonathan-allisons-projects.vercel.app/"
+            />
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Name
               </label>
               <input
+                name="name"
                 type="text"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Your name"
+                required
               />
             </div>
             <div>
@@ -34,9 +49,23 @@ export default function Contact() {
                 Email
               </label>
               <input
+                name="email"
                 type="email"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="you@example.com"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Phone
+              </label>
+              <input
+                name="phone"
+                type="tel"
+                placeholder="(555) 123-4567"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
               />
             </div>
             <div>
@@ -44,9 +73,11 @@ export default function Contact() {
                 Message
               </label>
               <textarea
+                name="message"
                 rows="5"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Type your message..."
+                required
               ></textarea>
             </div>
             <button
