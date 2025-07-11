@@ -97,7 +97,7 @@ export default function Contact() {
         </h2>
         <div className="w-full h-96 rounded-2xl overflow-hidden shadow-xl border">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3218.9546885192967!2d-79.44473692418822!3d36.21629627241934!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8852d46e0a45c8e5%3A0x8dc921b31937e09f!2s4307%20Sartin%20Rd%2C%20Burlington%2C%20NC%2027217!5e0!3m2!1sen!2sus!4v1751820187244!5m2!1sen!2sus"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3218.954680290678!2d-79.44463532418821!3d36.2162964724194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8852d46de2c2e4c9%3A0xfd032480895dd017!2s4309%20Sartin%20Rd%2C%20Burlington%2C%20NC%2027217!5e0!3m2!1sen!2sus!4v1752264946412!5m2!1sen!2sus"
             width="100%"
             height="100%"
             style={{ border: 0 }}

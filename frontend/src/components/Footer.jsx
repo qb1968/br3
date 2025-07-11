@@ -46,8 +46,8 @@ export default function Footer() {
         {/* Contact Info */}
         <div>
           <h4 className="text-white font-semibold mb-4">Contact</h4>
-          <p className="text-sm mb-2">4307 Sartin Rd, Burlington, NC</p>
-          <p className="text-sm mb-2">Phone: (555) 123-4567</p>
+          <p className="text-sm mb-2">4309 Sartin Rd, Burlington, NC</p>
+          <p className="text-sm mb-2">Phone: (336)459-2340</p>
           <p className="text-sm">Email: builders.resource336@gmail.com</p>
         </div>
 
