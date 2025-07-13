@@ -160,9 +160,14 @@ export default function Home() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl overflow-hidden shadow-xl mb-16">
+        <img
+          src="/images/newbr1.jpeg"
+          alt=""
+          className="w-full  "
+        />
         <div
           className="absolute inset-0 opacity-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/newbr1.jpeg')" }}
+          style={{ backgroundImage: "" }}
         />
         <div className="relative p-12 sm:p-20 text-white text-center">
           <h1

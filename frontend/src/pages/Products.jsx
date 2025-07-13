@@ -19,11 +19,15 @@ export default function Products() {
       .get("https://br3-q37q.onrender.com/api/products")
       .then((res) => setProducts(res.data));
   }, []);
+  const productsWithImages = products.filter(
+    (p) => Array.isArray(p.images) && p.images.length > 0
+  );
 
-  const totalPages = Math.ceil(products.length / productsPerPage);
+  const totalPages = Math.ceil(productsWithImages.length / productsPerPage);
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
-  const currentProducts = products.slice(indexOfFirst, indexOfLast);
+  const currentProducts = productsWithImages.slice(indexOfFirst, indexOfLast);
+  
 
   const goToPage = (page) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -49,7 +53,7 @@ export default function Products() {
             className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col overflow-hidden"
           >
             <img
-              src={product.imageUrl}
+              src={product.images[0]}
               alt={product.name}
               className="w-full h-48 object-cover"
             />
