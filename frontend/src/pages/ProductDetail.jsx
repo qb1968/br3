@@ -12,7 +12,47 @@ export default function ProductDetail() {
   const page = queryParams.get("page") || 1;
   const initialPage = parseInt(queryParams.get("page")) || 1;
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const [comparisonData, setComparisonData] = useState([]);
+  const [loadingCompare, setLoadingCompare] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
 
+  const fetchRetailPrices = async (productName) => {
+    try {
+      setLoadingCompare(true);
+      const response = await fetch(
+        `https://br3-q37q.onrender.com/api/compare-prices?q=${encodeURIComponent(
+          productName
+        )}`
+      );
+      const data = await response.json();
+      const items = data.shopping_results || [];
+      setComparisonData(items.slice(0, 5)); // Show only top 5
+    } catch (error) {
+      console.error("Error fetching retail prices:", error);
+    } finally {
+      setLoadingCompare(false);
+    }
+  };
+  
+  
+  //     const items = response.data.shopping_results || [];
+  //     setComparisonData(items.slice(0, 5)); // limit to 5 results
+  //   } catch (err) {
+  //     console.error("Error fetching retail prices", err);
+  //   } finally {
+  //     setLoadingCompare(false);
+  //   }
+  // };
+
+  const handleCompareClick = () => {
+    setShowComparison(!showComparison);
+    if (!showComparison && product?.name) {
+      fetchRetailPrices(product.name);
+    }
+  };
+  
+  
+  
   useEffect(() => {
     axios
       .get("https://br3-q37q.onrender.com/api/products")
@@ -59,6 +99,57 @@ export default function ProductDetail() {
           <p className="text-xl font-semibold text-blue-600 mb-3">
             ${product.price}
           </p>
+          <button
+            onClick={handleCompareClick}
+            className="bg-blue-600 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700"
+          >
+            {showComparison
+              ? "Hide Price Comparison"
+              : "Compare Prices at Major Retailers"}
+          </button>
+
+          {showComparison && (
+            <div className="mt-4 bg-gray-100 p-4 rounded">
+              <h3 className="text-lg font-semibold mb-2">Retailer Prices</h3>
+              {loadingCompare ? (
+                <p>Loading...</p>
+              ) : (
+                <ul className="space-y-2">
+                  {comparisonData.length > 0 ? (
+                    comparisonData.map((item, i) => {
+                      console.log("Retailer item:", item); // ✅ Add this line
+
+                      return (
+                        <li key={i} className="text-sm">
+                          <span className="font-medium">
+                            {item.source || item.title}
+                          </span>
+                          : {item.price} –{" "}
+                          <a
+                            href={
+                              item.product_link?.startsWith("http")
+                                ? item.product_link
+                                : item.link?.startsWith("http")
+                                ? item.link
+                                : "#"
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline"
+                          >
+                            View
+                          </a>
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <p>No comparison results found.</p>
+                  )}
+                </ul>
+              )}
+            </div>
+          )}
+
           <div className="text-gray-700 mb-4">
             {product.description.split("\n").map((line, i) => (
               <p key={i} className="mb-2">
