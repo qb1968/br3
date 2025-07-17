@@ -13,6 +13,7 @@ import Contact from "./pages/Contact"
 import Products from "./pages/Products";
 import Navbar from "./components/Navbar"
 import ScrollToTop from "./components/ScrollToTop";
+import AdminTable from "./pages/AdminTable";
 const App = () => {
   return (
     <div>
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="categories" element={<Categories />} /> 
         <Route path="/about" element={<About />} />
         <Route path="admin" element={<Admin />} />
+        <Route path="/admin2" element={<AdminTable/>}/>
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="/category/:category" element={<CategoryProducts />} />
         <Route path="/contact" element={<Contact />} />
