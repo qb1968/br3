@@ -198,7 +198,7 @@ router.post("/", upload.array("images", 10), async (req, res) => {
 // PUT update product and optionally images
 router.put("/:id", upload.array("images", 10), async (req, res) => {
   try {
-    const { name, category, description, price, stock, condition, color } =
+    const { name, category, description, price, stock, condition, color,sold,balance,total,retail,size } =
       req.body;
     const updatedFields = {
       name,
@@ -208,6 +208,11 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
       stock,
       condition,
       color,
+      sold,
+      balance,
+      total,
+      retail,
+      size,
     };
 
     if (req.files?.length > 0) {

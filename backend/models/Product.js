@@ -9,6 +9,14 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+  sold: {
+    type: Number,
+    default: 0,
+  },
+  balance: Number,
+  total: Number,
+  retail: Number,
+  size: String,
   // imageUrl: String,
   images: [String],
 });
