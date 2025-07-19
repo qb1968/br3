@@ -6,7 +6,6 @@ export default function AdminTable() {
   const [editingId, setEditingId] = useState(null);
   const [editedProduct, setEditedProduct] = useState({});
 
-  // Load all products
   useEffect(() => {
     axios
       .get("https://br3-q37q.onrender.com/api/products")
@@ -14,12 +13,9 @@ export default function AdminTable() {
       .catch(console.error);
   }, []);
 
-  // Delete product
   const handleDelete = async (id) => {
-    const confirm = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-    if (!confirm) return;
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
 
     try {
       await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
@@ -29,26 +25,37 @@ export default function AdminTable() {
     }
   };
 
-  // Enable editing
   const startEdit = (product) => {
     setEditingId(product._id);
-    setEditedProduct({
-      name: product.name,
-      price: product.price,
-      stock: product.stock,
-    });
+    setEditedProduct({ ...product });
   };
 
-  // Save product
   const saveEdit = async (id) => {
     try {
-      const res = await axios.put(
+      const original = products.find((p) => p._id === id);
+      const prevSold = Number(original.sold);
+      const prevStock = Number(original.stock);
+      const newSold = Number(editedProduct.sold);
+      const soldDiff = newSold - prevSold;
+
+      const updatedStock = prevStock - soldDiff;
+      const updatedBalance = updatedStock - newSold;
+
+      const updatedProduct = {
+        ...editedProduct,
+        stock: updatedStock,
+        balance: updatedBalance,
+      };
+
+      await axios.put(
         `https://br3-q37q.onrender.com/api/products/${id}`,
-        editedProduct
+        updatedProduct
       );
+
       setProducts((prev) =>
-        prev.map((p) => (p._id === id ? { ...p, ...editedProduct } : p))
+        prev.map((p) => (p._id === id ? { ...p, ...updatedProduct } : p))
       );
+
       setEditingId(null);
     } catch (err) {
       alert("Edit failed");
@@ -56,23 +63,34 @@ export default function AdminTable() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">📊 Product Table (Admin View)</h2>
+    <div className="max-w-7xl mx-auto p-4">
+      <h2 className="text-2xl font-semibold mb-4">🧾 Admin Inventory Table</h2>
 
-      <div className="overflow-x-auto border rounded-lg shadow">
-        <table className="min-w-full text-sm text-left text-gray-700">
-          <thead className="bg-gray-100 text-gray-900 uppercase text-xs">
+      <div className="overflow-x-auto border rounded-xl shadow-md">
+        <table className="min-w-full text-sm text-left text-gray-800">
+          <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
             <tr>
-              <th className="px-4 py-3">#</th>
-              <th className="px-4 py-3">Image</th>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Price</th>
-              <th className="px-4 py-3">Stock</th>
-              <th className="px-4 py-3">Actions</th>
+              {[
+                "#",
+                "Image",
+                "Name",
+                "Size",
+                "Stock",
+                "Sold",
+                "Balance",
+                "Color",
+                "Price",
+                "Total",
+                "Retail",
+                "Actions",
+              ].map((header, i) => (
+                <th key={i} className="px-4 py-3 whitespace-nowrap">
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
-
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-200 bg-white">
             {products.map((product, index) => (
               <tr key={product._id} className="hover:bg-gray-50">
                 <td className="px-4 py-3">{index + 1}</td>
@@ -87,89 +105,98 @@ export default function AdminTable() {
                     className="w-12 h-12 object-cover rounded"
                   />
                 </td>
+                {[
+                  "name",
+                  "size",
+                  null, // stock (not editable)
+                  "sold",
+                  null, // balance (auto)
+                  "color",
+                  "price",
+                  null, // total (auto)
+                  "retail",
+                ].map((field, i) => {
+                  if (field === null) {
+                    if (i === 2)
+                      return (
+                        <td key={i} className="px-4 py-3">
+                          {product.stock}
+                        </td>
+                      );
+                    if (i === 4)
+                      return (
+                        <td key={i} className="px-4 py-3">
+                          {product.balance}
+                        </td>
+                      );
+                    if (i === 7)
+                      return (
+                        <td key={i} className="px-4 py-3">
+                          ${Number(product.stock * product.price).toFixed(2)}
+                        </td>
+                      );
+                  }
+
+                  return (
+                    <td key={i} className="px-4 py-3">
+                      {editingId === product._id ? (
+                        <input
+                          type={
+                            field === "name" || field === "color"
+                              ? "text"
+                              : "number"
+                          }
+                          value={editedProduct[field]}
+                          onChange={(e) =>
+                            setEditedProduct((prev) => ({
+                              ...prev,
+                              [field]: e.target.value,
+                            }))
+                          }
+                          className="border border-gray-300 rounded px-2 py-1 w-full"
+                        />
+                      ) : field === "price" || field === "retail" ? (
+                        `$${product[field]}`
+                      ) : (
+                        product[field]
+                      )}
+                    </td>
+                  );
+                })}
                 <td className="px-4 py-3">
-                  {editingId === product._id ? (
-                    <input
-                      type="text"
-                      value={editedProduct.name}
-                      onChange={(e) =>
-                        setEditedProduct((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                      className="border rounded px-2 py-1 w-full"
-                    />
-                  ) : (
-                    product.name
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  {editingId === product._id ? (
-                    <input
-                      type="number"
-                      value={editedProduct.price}
-                      onChange={(e) =>
-                        setEditedProduct((prev) => ({
-                          ...prev,
-                          price: e.target.value,
-                        }))
-                      }
-                      className="border rounded px-2 py-1 w-full"
-                    />
-                  ) : (
-                    `$${product.price}`
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  {editingId === product._id ? (
-                    <input
-                      type="number"
-                      value={editedProduct.stock}
-                      onChange={(e) =>
-                        setEditedProduct((prev) => ({
-                          ...prev,
-                          stock: e.target.value,
-                        }))
-                      }
-                      className="border rounded px-2 py-1 w-full"
-                    />
-                  ) : (
-                    product.stock
-                  )}
-                </td>
-                <td className="px-4 py-3 space-x-2">
-                  {editingId === product._id ? (
-                    <>
-                      <button
-                        onClick={() => saveEdit(product._id)}
-                        className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={() => setEditingId(null)}
-                        className="px-3 py-1 text-sm bg-gray-400 text-white rounded hover:bg-gray-500"
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => startEdit(product)}
-                        className="px-3 py-1 text-sm bg-yellow-400 text-white rounded hover:bg-yellow-500"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(product._id)}
-                        className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
+                  <div className="flex space-x-2">
+                    {editingId === product._id ? (
+                      <>
+                        <button
+                          onClick={() => saveEdit(product._id)}
+                          className="px-3 py-1 text-xs font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg"
+                        >
+                          💾 Save
+                        </button>
+                        <button
+                          onClick={() => setEditingId(null)}
+                          className="px-3 py-1 text-xs font-medium text-white bg-gray-500 hover:bg-gray-600 rounded-lg"
+                        >
+                          ❌ Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => startEdit(product)}
+                          className="px-3 py-1 text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(product._id)}
+                          className="px-3 py-1 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg"
+                        >
+                          🗑 Delete
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}

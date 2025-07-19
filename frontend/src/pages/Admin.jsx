@@ -18,7 +18,9 @@ export default function Admin() {
     stock: "",
     condition: "",
     color: "",
+    size: "",
     images: [],
+    
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -271,6 +273,15 @@ export default function Admin() {
               value={formData.stock}
               onChange={(e) =>
                 setFormData({ ...formData, stock: e.target.value })
+              }
+              className="border p-2 rounded"
+            />
+            <input
+              type="text"
+              placeholder="Size (optional)"
+              value={formData.size}
+              onChange={(e) =>
+                setFormData({ ...formData, size: e.target.value })
               }
               className="border p-2 rounded"
             />
