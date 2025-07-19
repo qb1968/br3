@@ -132,7 +132,15 @@ export default function AdminTable() {
                     if (i === 7)
                       return (
                         <td key={i} className="px-4 py-3">
-                          ${Number(product.stock * product.price).toFixed(2)}
+                          <td className="px-4 py-3">
+                            <td className="px-4 py-3">
+                              $
+                              {(
+                                Number(product.stock) * Number(product.price) ||
+                                0
+                              ).toFixed(2)}
+                            </td>
+                          </td>
                         </td>
                       );
                   }
