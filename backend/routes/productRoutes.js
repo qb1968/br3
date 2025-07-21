@@ -248,4 +248,23 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// Bulk insert products
+router.post("/bulk", async (req, res) => {
+  try {
+    const newProducts = req.body;
+
+    // Optional: validate each required field
+    if (!Array.isArray(newProducts)) {
+      return res.status(400).json({ error: "Invalid input format" });
+    }
+
+    const inserted = await Product.insertMany(newProducts, { ordered: false });
+    res.status(201).json(inserted);
+  } catch (err) {
+    console.error("Bulk insert failed:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 module.exports = router;

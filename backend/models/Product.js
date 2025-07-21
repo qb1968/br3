@@ -19,6 +19,7 @@ const ProductSchema = new mongoose.Schema({
   size: String,
   type: String,
   color: String,
+  totalSales: { type: Number, default: 0 },
   // imageUrl: String,
   images: [String],
 });
