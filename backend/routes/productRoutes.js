@@ -213,6 +213,7 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
       total,
       retail,
       size,
+      type,
     };
 
     if (req.files?.length > 0) {

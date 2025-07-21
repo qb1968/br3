@@ -17,6 +17,8 @@ const ProductSchema = new mongoose.Schema({
   total: Number,
   retail: Number,
   size: String,
+  type: String,
+  color: String,
   // imageUrl: String,
   images: [String],
 });
