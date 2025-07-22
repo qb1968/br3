@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Admin2 from "./AdminTable"; // this should point to your secondary admin page
+import Admin2 from "./AdminTable";
 
 export default function Admin() {
   const [selectedTab, setSelectedTab] = useState("admin"); // "admin" or "admin2"
@@ -19,6 +19,11 @@ export default function Admin() {
     images: [],
   });
   const [editProduct, setEditProduct] = useState(null);
+  const [imagePreviews, setImagePreviews] = useState([]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
@@ -26,10 +31,14 @@ export default function Admin() {
     username: "",
     password: "",
   });
-
   useEffect(() => {
     if (!isAuthenticated) return;
-    fetchProducts();
+    axios
+      .get("https://br3-q37q.onrender.com/api/categories")
+      .then((res) => setCategories(res.data));
+    axios
+      .get("https://br3-q37q.onrender.com/api/products")
+      .then((res) => setProducts(res.data));
   }, [isAuthenticated]);
 
   const handleLogin = (e) => {
@@ -45,21 +54,23 @@ export default function Admin() {
     }
   };
 
+  const fetchProducts = async () => {
+    const res = await axios.get("http://localhost:5000/api/products");
+    setProducts(res.data);
+  };
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files) {
       setFormData((prev) => ({ ...prev, [name]: files }));
+
+      // Create preview URLs for new images
+      const previews = Array.from(files).map((file) =>
+        URL.createObjectURL(file)
+      );
+      setImagePreviews(previews);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get("https://br3-q37q.onrender.com/api/products");
-      setProducts(res.data);
-    } catch (err) {
-      console.error("Error fetching products:", err);
     }
   };
 
@@ -81,8 +92,8 @@ export default function Admin() {
       }
 
       const url = editProduct
-        ? `https://br3-q37q.onrender.com/api/products/${editProduct._id}`
-        : "https://br3-q37q.onrender.com/api/products";
+        ? `http://localhost:5000/api/products/${editProduct._id}`
+        : "http://localhost:5000/api/products";
       const method = editProduct ? "put" : "post";
 
       await axios[method](url, data, {
@@ -94,6 +105,7 @@ export default function Admin() {
       setEditProduct(null);
       resetForm();
       fetchProducts();
+      setImagePreviews([]); // Clear previews on submit
     } catch (error) {
       console.error("Error saving product:", error);
       alert("Failed to save product.");
@@ -114,6 +126,7 @@ export default function Admin() {
       retail: "",
       images: [],
     });
+    setImagePreviews([]);
   };
 
   const handleEdit = (product) => {
@@ -129,41 +142,50 @@ export default function Admin() {
       size: product.size || "",
       type: product.type || "",
       retail: product.retail || "",
-      images: [],
+      images: [], // reset images so user can add new if desired
     });
+    // Show existing images as previews
+    setImagePreviews(product.images || []);
   };
 
-  if (!isAuthenticated && showLogin) {
+  // Cleanup preview URLs to avoid memory leaks
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach((url) => {
+        if (url.startsWith("blob:")) URL.revokeObjectURL(url);
+      });
+    };
+  }, [imagePreviews]);
+
+  if (showLogin) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <form
           onSubmit={handleLogin}
-          className="bg-white p-6 rounded shadow-md w-full max-w-sm"
+          className="bg-white p-8 rounded shadow-md w-full max-w-sm"
         >
-          <h2 className="text-xl font-bold mb-4 text-center">Admin Login</h2>
+          <h2 className="text-2xl font-bold mb-4 text-center">Admin Login</h2>
           <input
             type="text"
-            name="username"
             placeholder="Username"
             value={credentials.username}
             onChange={(e) =>
-              setCredentials((prev) => ({ ...prev, username: e.target.value }))
+              setCredentials({ ...credentials, username: e.target.value })
             }
-            className="w-full mb-3 p-2 border rounded"
+            className="border p-2 w-full mb-4 rounded"
           />
           <input
             type="password"
-            name="password"
             placeholder="Password"
             value={credentials.password}
             onChange={(e) =>
-              setCredentials((prev) => ({ ...prev, password: e.target.value }))
+              setCredentials({ ...credentials, password: e.target.value })
             }
-            className="w-full mb-3 p-2 border rounded"
+            className="border p-2 w-full mb-4 rounded"
           />
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700"
           >
             Login
           </button>
@@ -172,9 +194,10 @@ export default function Admin() {
     );
   }
 
-  // TAB SWITCHING LOGIC
   return (
-    <div className="p-4 max-w-screen-xl mx-auto">
+    <div className="p-4 max-w-screen-lg mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
+
       <div className="flex justify-center gap-4 mb-6">
         <button
           onClick={() => setSelectedTab("admin")}
@@ -198,11 +221,8 @@ export default function Admin() {
         </button>
       </div>
 
-      {selectedTab === "admin2" ? (
-        <Admin2 />
-      ) : (
+      {selectedTab === "admin" && (
         <>
-          <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
           <form
             onSubmit={handleSubmit}
             className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6"
@@ -236,6 +256,21 @@ export default function Admin() {
               onChange={handleChange}
               className="sm:col-span-2"
             />
+
+            {/* Image Previews */}
+            {imagePreviews.length > 0 && (
+              <div className="sm:col-span-2 flex flex-wrap gap-2">
+                {imagePreviews.map((src, idx) => (
+                  <img
+                    key={idx}
+                    src={src}
+                    alt={`preview-${idx}`}
+                    className="h-20 w-20 object-cover rounded border"
+                  />
+                ))}
+              </div>
+            )}
+
             <div className="sm:col-span-2 flex justify-between">
               <button
                 type="submit"
@@ -295,6 +330,8 @@ export default function Admin() {
           </table>
         </>
       )}
+
+      {selectedTab === "admin2" && <Admin2 />}
     </div>
   );
 }
