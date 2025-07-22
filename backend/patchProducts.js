@@ -16,6 +16,7 @@ const patchProducts = async () => {
       product.balance = product.total - product.sold;
       product.color = product.color || "";
       product.size = product.size || "";
+      product.type = product.type || "";
       await product.save();
     }
 
