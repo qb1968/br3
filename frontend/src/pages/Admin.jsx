@@ -55,7 +55,7 @@ export default function Admin() {
   };
 
   const fetchProducts = async () => {
-    const res = await axios.get("http://localhost:5000/api/products");
+    const res = await axios.get("https://br3-q37q.onrender.com/api/products");
     setProducts(res.data);
   };
 
@@ -92,8 +92,8 @@ export default function Admin() {
       }
 
       const url = editProduct
-        ? `http://localhost:5000/api/products/${editProduct._id}`
-        : "http://localhost:5000/api/products";
+        ? `https://br3-q37q.onrender.com/api/products/${editProduct._id}`
+        : "https://br3-q37q.onrender.com/api/products";
       const method = editProduct ? "put" : "post";
 
       await axios[method](url, data, {
