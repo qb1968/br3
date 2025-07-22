@@ -159,7 +159,7 @@ export default function Home() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl overflow-hidden shadow-xl mb-16">
+      <section className="relative bg-gradient-to-r from-gray-600 to-black-800 rounded-2xl overflow-hidden shadow-xl mb-16">
         <img
           src="/images/newbr1.jpeg"
           alt=""
@@ -171,14 +171,14 @@ export default function Home() {
         />
         <div className="relative p-12 sm:p-20 text-white text-center">
           <h1
-            className="text-4xl sm:text-5xl font-extrabold mb-4"
+            className="text-4xl sm:text-5xl font-extrabold mb-4 text-black"
             data-aos="fade-down"
             data-aos-delay="200"
           >
             Quality Building Supplies
           </h1>
           <p
-            className="text-lg sm:text-xl max-w-3xl mx-auto"
+            className="text-lg sm:text-xl max-w-3xl mx-auto text-black font-bold"
             data-aos="fade-up"
             data-aos-delay="400"
           >
