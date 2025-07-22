@@ -1,15 +1,10 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import BackToTop from "../components/BackToTop";
-import Admin2 from "./AdminTable"; // Import your second admin page component
+import axios from "axios";
+import Admin2 from "./AdminTable"; // this should point to your secondary admin page
 
 export default function Admin() {
   const [selectedTab, setSelectedTab] = useState("admin"); // "admin" or "admin2"
-
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [editProduct, setEditProduct] = useState(null);
-  const [newCategory, setNewCategory] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -19,9 +14,11 @@ export default function Admin() {
     condition: "",
     color: "",
     size: "",
+    type: "",
+    retail: "",
     images: [],
-    
   });
+  const [editProduct, setEditProduct] = useState(null);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
@@ -29,6 +26,11 @@ export default function Admin() {
     username: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetchProducts();
+  }, [isAuthenticated]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -43,30 +45,21 @@ export default function Admin() {
     }
   };
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    axios
-      .get("https://br3-q37q.onrender.com/api/categories")
-      .then((res) => setCategories(res.data));
-    axios
-      .get("https://br3-q37q.onrender.com/api/products")
-      .then((res) => setProducts(res.data));
-  }, [isAuthenticated]);
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (files) {
+      setFormData((prev) => ({ ...prev, [name]: files }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
 
-  const handleAddCategory = async () => {
-    if (!newCategory.trim()) return;
+  const fetchProducts = async () => {
     try {
-      await axios.post("https://br3-q37q.onrender.com/api/categories", {
-        name: newCategory.trim(),
-      });
-      const updated = await axios.get(
-        "https://br3-q37q.onrender.com/api/categories"
-      );
-      setCategories(updated.data);
-      setNewCategory("");
-    } catch (error) {
-      console.error("Failed to add category", error);
-      alert("Could not add category");
+      const res = await axios.get("https://br3-q37q.onrender.com/api/products");
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Error fetching products:", err);
     }
   };
 
@@ -99,71 +92,78 @@ export default function Admin() {
       });
 
       setEditProduct(null);
-      setFormData({
-        name: "",
-        category: "",
-        description: "",
-        price: "",
-        stock: "",
-        condition: "",
-        color: "",
-        images: [],
-      });
-
-      const updated = await axios.get(
-        "https://br3-q37q.onrender.com/api/products"
-      );
-      setProducts(updated.data);
+      resetForm();
+      fetchProducts();
     } catch (error) {
       console.error("Error saving product:", error);
       alert("Failed to save product.");
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?"))
-      return;
-    try {
-      await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
-      const updated = await axios.get(
-        "https://br3-q37q.onrender.com/api/products"
-      );
-      setProducts(updated.data);
-    } catch (err) {
-      console.error("Delete error:", err);
-      alert("Failed to delete product.");
-    }
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      category: "",
+      description: "",
+      price: "",
+      stock: "",
+      condition: "",
+      color: "",
+      size: "",
+      type: "",
+      retail: "",
+      images: [],
+    });
   };
 
-  if (showLogin) {
+  const handleEdit = (product) => {
+    setEditProduct(product);
+    setFormData({
+      name: product.name || "",
+      category: product.category || "",
+      description: product.description || "",
+      price: product.price || "",
+      stock: product.stock || "",
+      condition: product.condition || "",
+      color: product.color || "",
+      size: product.size || "",
+      type: product.type || "",
+      retail: product.retail || "",
+      images: [],
+    });
+  };
+
+  if (!isAuthenticated && showLogin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <form
           onSubmit={handleLogin}
-          className="bg-white p-8 rounded shadow-md w-full max-w-sm"
+          className="bg-white p-6 rounded shadow-md w-full max-w-sm"
         >
-          <h2 className="text-2xl font-bold mb-4 text-center">Admin Login</h2>
+          <h2 className="text-xl font-bold mb-4 text-center">Admin Login</h2>
           <input
             type="text"
+            name="username"
             placeholder="Username"
             value={credentials.username}
             onChange={(e) =>
-              setCredentials({ ...credentials, username: e.target.value })
+              setCredentials((prev) => ({ ...prev, username: e.target.value }))
             }
-            className="border p-2 w-full mb-4 rounded"
+            className="w-full mb-3 p-2 border rounded"
           />
           <input
             type="password"
+            name="password"
             placeholder="Password"
             value={credentials.password}
             onChange={(e) =>
-              setCredentials({ ...credentials, password: e.target.value })
+              setCredentials((prev) => ({ ...prev, password: e.target.value }))
             }
-            className="border p-2 w-full mb-4 rounded"
+            className="w-full mb-3 p-2 border rounded"
           />
           <button
             type="submit"
-            className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
           >
             Login
           </button>
@@ -172,11 +172,9 @@ export default function Admin() {
     );
   }
 
+  // TAB SWITCHING LOGIC
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">Admin Panel</h1>
-
-      {/* Tabs for Admin and Admin2 */}
+    <div className="p-4 max-w-screen-xl mx-auto">
       <div className="flex justify-center gap-4 mb-6">
         <button
           onClick={() => setSelectedTab("admin")}
@@ -200,201 +198,103 @@ export default function Admin() {
         </button>
       </div>
 
-      {/* Render Admin content */}
-      {selectedTab === "admin" && (
+      {selectedTab === "admin2" ? (
+        <Admin2 />
+      ) : (
         <>
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Add New Category</h2>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="New Category"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                className="border p-2 rounded w-full"
-              />
-              <button
-                type="button"
-                onClick={handleAddCategory}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-
+          <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
           <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-1 gap-4 mb-10"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6"
           >
-            <input
-              type="text"
-              placeholder="Product Name"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              className="border p-2 rounded"
-            />
-            <select
-              value={formData.category}
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value })
-              }
-              className="border p-2 rounded"
-            >
-              <option value="">Select Category</option>
-              {categories.map((c) => (
-                <option key={c._id} value={c.name}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-            <textarea
-              placeholder="Description"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              placeholder="Price "
-              value={formData.price}
-              onChange={(e) =>
-                setFormData({ ...formData, price: e.target.value })
-              }
-              className="border p-2 rounded"
-            />
-            <input
-              type="number"
-              placeholder="Stock (optional)"
-              value={formData.stock}
-              onChange={(e) =>
-                setFormData({ ...formData, stock: e.target.value })
-              }
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              placeholder="Size (optional)"
-              value={formData.size}
-              onChange={(e) =>
-                setFormData({ ...formData, size: e.target.value })
-              }
-              className="border p-2 rounded"
-            />
+            {[
+              "name",
+              "category",
+              "description",
+              "price",
+              "stock",
+              "condition",
+              "color",
+              "size",
+              "type",
+              "retail",
+            ].map((field) => (
+              <input
+                key={field}
+                type="text"
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                className="border p-2 rounded"
+              />
+            ))}
             <input
               type="file"
+              name="images"
               multiple
-              onChange={(e) =>
-                setFormData({ ...formData, images: e.target.files })
-              }
-              className="border p-2 rounded"
+              onChange={handleChange}
+              className="sm:col-span-2"
             />
-            <div className="flex gap-3 flex-wrap mt-2">
-              {formData.images &&
-                Array.from(formData.images).map((file, i) => (
-                  <img
-                    key={i}
-                    src={URL.createObjectURL(file)}
-                    alt={`preview-${i}`}
-                    className="w-32 h-32 object-cover rounded border"
-                  />
-                ))}
-            </div>
-            {editProduct && editProduct.images && !formData.images.length && (
-              <div className="flex gap-3 flex-wrap mt-2">
-                {editProduct.images.map((imgUrl, i) => (
-                  <img
-                    key={i}
-                    src={imgUrl}
-                    alt={`existing-${i}`}
-                    className="w-32 h-32 object-cover rounded border"
-                  />
-                ))}
-              </div>
-            )}
-            <button
-              type="submit"
-              className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-            >
-              {editProduct ? "Update Product" : "Add Product"}
-            </button>
-            {editProduct && (
+            <div className="sm:col-span-2 flex justify-between">
               <button
-                type="button"
-                onClick={() => {
-                  setEditProduct(null);
-                  setFormData({
-                    name: "",
-                    category: "",
-                    description: "",
-                    price: "",
-                    stock: "",
-                    condition: "",
-                    color: "",
-                    images: [],
-                  });
-                }}
-                className="bg-gray-500 text-white py-2 rounded hover:bg-gray-600"
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded"
               >
-                Cancel Edit
+                {editProduct ? "Update Product" : "Add Product"}
               </button>
-            )}
+              {editProduct && (
+                <button
+                  type="button"
+                  className="bg-gray-500 text-white px-4 py-2 rounded"
+                  onClick={() => {
+                    setEditProduct(null);
+                    resetForm();
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
           </form>
 
-          <h2 className="text-2xl font-semibold mb-4">Current Products</h2>
-          <ul className="space-y-4">
-            {products.map((p) => (
-              <li
-                key={p._id}
-                className="p-4 border rounded flex justify-between items-center"
-              >
-                <div>
-                  <h3 className="text-lg font-bold">{p.name}</h3>
-                  <p className="text-sm text-gray-600">
-                    {p.category} - ${p.price}
-                  </p>
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => {
-                      setEditProduct(p);
-                      setFormData({
-                        name: p.name || "",
-                        category: p.category || "",
-                        description: p.description || "",
-                        price: p.price || "",
-                        stock: p.stock || "",
-                        condition: p.condition || "",
-                        color: p.color || "",
-                        images: [],
-                      });
-                      setSelectedTab("admin"); // optional: stay in admin tab on edit
-                    }}
-                    className="text-blue-600 hover:underline"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(p._id)}
-                    className="text-red-600 hover:underline"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <table className="min-w-full border text-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border px-2 py-1">Name</th>
+                <th className="border px-2 py-1">Category</th>
+                <th className="border px-2 py-1">Retail</th>
+                <th className="border px-2 py-1">Type</th>
+                <th className="border px-2 py-1">Size</th>
+                <th className="border px-2 py-1">Color</th>
+                <th className="border px-2 py-1">Stock</th>
+                <th className="border px-2 py-1">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((p) => (
+                <tr key={p._id}>
+                  <td className="border px-2 py-1">{p.name}</td>
+                  <td className="border px-2 py-1">{p.category}</td>
+                  <td className="border px-2 py-1">{p.retail}</td>
+                  <td className="border px-2 py-1">{p.type}</td>
+                  <td className="border px-2 py-1">{p.size}</td>
+                  <td className="border px-2 py-1">{p.color}</td>
+                  <td className="border px-2 py-1">{p.stock}</td>
+                  <td className="border px-2 py-1">
+                    <button
+                      className="text-blue-600 underline mr-2"
+                      onClick={() => handleEdit(p)}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </>
       )}
-
-      {/* Render Admin2 content */}
-      {selectedTab === "admin2" && <Admin2 />}
-
-      <BackToTop />
     </div>
   );
 }

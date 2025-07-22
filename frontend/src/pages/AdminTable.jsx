@@ -14,8 +14,7 @@ export default function AdminTable() {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
 
     try {
       await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
@@ -33,9 +32,9 @@ export default function AdminTable() {
   const saveEdit = async (id) => {
     try {
       const original = products.find((p) => p._id === id);
-      const prevSold = Number(original.sold);
-      const prevStock = Number(original.stock);
-      const newSold = Number(editedProduct.sold);
+      const prevSold = Number(original.sold) || 0;
+      const prevStock = Number(original.stock) || 0;
+      const newSold = Number(editedProduct.sold) || 0;
       const soldDiff = newSold - prevSold;
 
       const updatedStock = prevStock - soldDiff;
@@ -66,8 +65,8 @@ export default function AdminTable() {
     <div className="max-w-7xl mx-auto p-4">
       <h2 className="text-2xl font-semibold mb-4">🧾 Admin Inventory Table</h2>
 
-      <div className="overflow-x-auto border rounded-xl shadow-md">
-        <table className="min-w-full text-sm text-left text-gray-800">
+      <div className=" border rounded-xl shadow-md">
+        <table className="w-full text-sm text-left text-gray-800">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
             <tr>
               {[
@@ -82,6 +81,7 @@ export default function AdminTable() {
                 "Price",
                 "Total",
                 "Retail",
+                "Total Sales",
                 "Actions",
               ].map((header, i) => (
                 <th key={i} className="px-4 py-3 whitespace-nowrap">
@@ -132,15 +132,10 @@ export default function AdminTable() {
                     if (i === 7)
                       return (
                         <td key={i} className="px-4 py-3">
-                          <td className="px-4 py-3">
-                            <td className="px-4 py-3">
-                              $
-                              {(
-                                Number(product.stock) * Number(product.price) ||
-                                0
-                              ).toFixed(2)}
-                            </td>
-                          </td>
+                          $
+                          {(
+                            Number(product.stock) * Number(product.price) || 0
+                          ).toFixed(2)}
                         </td>
                       );
                   }
@@ -154,7 +149,7 @@ export default function AdminTable() {
                               ? "text"
                               : "number"
                           }
-                          value={editedProduct[field]}
+                          value={editedProduct[field] ?? ""}
                           onChange={(e) =>
                             setEditedProduct((prev) => ({
                               ...prev,
@@ -171,6 +166,13 @@ export default function AdminTable() {
                     </td>
                   );
                 })}
+                {/* Total Sales */}
+                <td className="px-4 py-3">
+                  $
+                  {(Number(product.sold) * Number(product.price) || 0).toFixed(
+                    2
+                  )}
+                </td>
                 <td className="px-4 py-3">
                   <div className="flex space-x-2">
                     {editingId === product._id ? (

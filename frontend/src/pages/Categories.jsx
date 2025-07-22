@@ -7,18 +7,24 @@ export default function Categories() {
 
   useEffect(() => {
     axios.get("https://br3-q37q.onrender.com/api/categories").then((res) => {
-      console.log("Fetched categories:", res.data); // Debug
-      setCategories(res.data);
+      const data = res.data;
+
+      // Ensure 'More' is always last
+      const sorted = [
+        ...data.filter((cat) => cat.name.toLowerCase() !== "more..."),
+        ...data.filter((cat) => cat.name.toLowerCase() === "more..."),
+      ];
+
+      setCategories(sorted);
     });
   }, []);
-  
 
   return (
-    <div className="max-w-4xl mx-auto p-6  ">
+    <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-8 text-center">
         Browse by Category
       </h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6 ">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
         {categories.map((cat) => (
           <Link
             key={cat._id}
