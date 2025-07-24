@@ -4,7 +4,12 @@ const ProductSchema = new mongoose.Schema({
   name: String,
   category: String,
   description: String,
-  price: String,
+  price: { type: Number, required: true },
+  priceType: {
+    type: String,
+    enum: ["per piece", "per bundle","each","per box","pair"],
+    default: "",
+  },
   stock: {
     type: Number,
     required: false,
@@ -13,6 +18,7 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  condition: String,
   balance: Number,
   total: Number,
   retail: Number,

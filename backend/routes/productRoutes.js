@@ -19,23 +19,26 @@ router.get("/", async (req, res) => {
 // POST new product with multiple images
 router.post("/", upload.array("images", 10), async (req, res) => {
   try {
-    const { name, category, description, price, stock, condition, color,retail,type } =
+    const { name, category, description, price, stock, condition, color,retail,type,priceType = "each",totalSales, total } =
       req.body;
     const images = req.files.map((file) => file.path); // cloudinary URLs
-
+    const parsedPrice = parseFloat(price) || 0;
     const product = new Product({
       name,
       category,
       description,
-      price,
+      price: parsedPrice,
       stock,
       condition,
       color,
       images,
       retail,
       type,
+      total,
+      totalSales,
+      priceType,
     });
-
+    
     await product.save();
     res.status(201).json(product);
   } catch (err) {
@@ -46,13 +49,14 @@ router.post("/", upload.array("images", 10), async (req, res) => {
 // PUT update product and optionally images
 router.put("/:id", upload.array("images", 10), async (req, res) => {
   try {
-    const { name, category, description, price, stock, condition, color,sold,balance,total,retail,size,type } =
+    const { name, category, description, price, stock, condition, color,sold,balance,total,retail,size,type,priceType } =
       req.body;
+    const parsedPrice = parseFloat(price) || 0;
     const updatedFields = {
       name,
       category,
       description,
-      price,
+      price: parsedPrice,
       stock,
       condition,
       color,
@@ -62,8 +66,9 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
       retail,
       size,
       type,
+      priceType,
     };
-
+     
     if (req.files?.length > 0) {
       updatedFields.images = req.files.map((file) => file.path);
     }
