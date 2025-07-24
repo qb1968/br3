@@ -12,7 +12,7 @@ export default function CategoryProducts() {
     window.scrollTo(0, 0);
     axios.get("https://br3-q37q.onrender.com/api/products").then((res) => {
       const filtered = res.data.filter(
-        (p) => p.category.toLowerCase() === category
+        (p) => p.category && p.category.toLowerCase() === category
       );
       setProducts(filtered);
     });

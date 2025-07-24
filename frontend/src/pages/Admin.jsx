@@ -5,11 +5,13 @@ import Admin2 from "./AdminTable";
 export default function Admin() {
   const [selectedTab, setSelectedTab] = useState("admin"); // "admin" or "admin2"
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]); // added categories state
   const [formData, setFormData] = useState({
     name: "",
     category: "",
     description: "",
     price: "",
+    priceType: "Each",
     stock: "",
     condition: "",
     color: "",
@@ -20,6 +22,9 @@ export default function Admin() {
   });
   const [editProduct, setEditProduct] = useState(null);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [newCategoryName, setNewCategoryName] = useState(""); // new state
+  const [addingCategory, setAddingCategory] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -31,6 +36,45 @@ export default function Admin() {
     username: "",
     password: "",
   });
+
+   useEffect(() => {
+     const handleScroll = () => {
+       setShowScrollTop(window.scrollY > 300);
+     };
+     window.addEventListener("scroll", handleScroll);
+     return () => window.removeEventListener("scroll", handleScroll);
+   }, []);
+
+   const scrollToTop = () => {
+     window.scrollTo({ top: 0, behavior: "smooth" });
+   };
+
+
+ const handleAddCategory = async () => {
+   if (!newCategoryName.trim()) {
+     alert("Please enter a category name");
+     return;
+   }
+   try {
+     const res = await axios.post(
+       "https://br3-q37q.onrender.com/api/categories",
+       { name: newCategoryName.trim() }
+     );
+     // Add the new category to categories list
+     setCategories((prev) => [...prev, res.data]);
+     // Select the newly added category in form
+     setFormData((prev) => ({ ...prev, category: res.data.name }));
+     // Reset new category input & hide it
+     setNewCategoryName("");
+     setAddingCategory(false);
+   } catch (error) {
+     console.error("Failed to add category", error);
+     alert("Failed to add category");
+   }
+ };
+
+
+  // Fetch categories & products after authentication
   useEffect(() => {
     if (!isAuthenticated) return;
     axios
@@ -136,6 +180,7 @@ export default function Admin() {
       category: product.category || "",
       description: product.description || "",
       price: product.price || "",
+      priceType: product.priceType || "",
       stock: product.stock || "",
       condition: product.condition || "",
       color: product.color || "",
@@ -147,6 +192,19 @@ export default function Admin() {
     // Show existing images as previews
     setImagePreviews(product.images || []);
   };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
+    try {
+      await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
+      fetchProducts(); // Refresh list after deletion
+    } catch (error) {
+      console.error("Failed to delete product", error);
+      alert("Failed to delete product");
+    }
+  };
+
 
   // Cleanup preview URLs to avoid memory leaks
   useEffect(() => {
@@ -227,11 +285,103 @@ export default function Admin() {
             onSubmit={handleSubmit}
             className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6"
           >
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Name"
+              className="border p-2 rounded"
+            />
+
+            {/* Category dropdown with 'more...' last */}
+            <select
+              name="category"
+              value={formData.category}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "__add_new__") {
+                  setAddingCategory(true);
+                  setFormData((prev) => ({ ...prev, category: "" }));
+                } else {
+                  setAddingCategory(false);
+                  setFormData((prev) => ({ ...prev, category: val }));
+                }
+              }}
+              className="border p-2 rounded"
+            >
+              <option value="">Select Category</option>
+              {categories
+                .filter((cat) => cat.name.toLowerCase() !== "more...")
+                .map((cat) => (
+                  <option key={cat._id} value={cat.name}>
+                    {cat.name}
+                  </option>
+                ))}
+              {categories.some(
+                (cat) => cat.name.toLowerCase() === "more..."
+              ) && (
+                <option key="more" value="more...">
+                  More...
+                </option>
+              )}
+              <option value="__add_new__" className="font-bold">
+                + Add New Category
+              </option>
+            </select>
+            {addingCategory && (
+              <div className="sm:col-span-2 flex gap-2 items-center">
+                <input
+                  type="text"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  placeholder="New category name"
+                  className="border p-2 rounded flex-grow"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddCategory}
+                  className="bg-green-600 text-white px-4 py-2 rounded"
+                >
+                  Add
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAddingCategory(false);
+                    setNewCategoryName("");
+                  }}
+                  className="bg-gray-400 text-white px-4 py-2 rounded"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+            <div className="flex gap-2 items-center">
+              <input
+                type="text"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="Price"
+                className="border p-2 rounded flex-grow"
+              />
+              <select
+                name="priceType"
+                value={formData.priceType}
+                onChange={handleChange}
+                className="border p-2 rounded"
+              >
+                <option value="">-- None --</option>
+                <option value="Each">Ea.</option>
+                <option value="Bundle">Per Bundle</option>
+                <option value="Box">Per Box</option>
+                <option value="Pair">Pair</option>
+              </select>
+            </div>
             {[
-              "name",
-              "category",
               "description",
-              "price",
+              // "price",
               "stock",
               "condition",
               "color",
@@ -249,6 +399,7 @@ export default function Admin() {
                 className="border p-2 rounded"
               />
             ))}
+
             <input
               type="file"
               name="images"
@@ -303,6 +454,7 @@ export default function Admin() {
                 <th className="border px-2 py-1">Size</th>
                 <th className="border px-2 py-1">Color</th>
                 <th className="border px-2 py-1">Stock</th>
+                <th className="border px-2 py-1">Price</th>
                 <th className="border px-2 py-1">Actions</th>
               </tr>
             </thead>
@@ -316,13 +468,22 @@ export default function Admin() {
                   <td className="border px-2 py-1">{p.size}</td>
                   <td className="border px-2 py-1">{p.color}</td>
                   <td className="border px-2 py-1">{p.stock}</td>
-                  <td className="border px-2 py-1">
+                  <td className="border px-2 py-1">{p.price}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex space-x-2">
                     <button
-                      className="text-blue-600 underline mr-2"
                       onClick={() => handleEdit(p)}
+                      className="px-3 py-1 text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
                     >
-                      Edit
+                      ✏️ Edit
                     </button>
+                    <button
+                      onClick={() => handleDelete(p._id)}
+                      className="px-3 py-1 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg"
+                    >
+                      🗑 Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -332,6 +493,15 @@ export default function Admin() {
       )}
 
       {selectedTab === "admin2" && <Admin2 />}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition z-50"
+          aria-label="Back to top"
+        >
+          ↑ Top
+        </button>
+      )}
     </div>
   );
 }

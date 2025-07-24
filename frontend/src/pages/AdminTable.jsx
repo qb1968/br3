@@ -5,6 +5,7 @@ export default function AdminTable() {
   const [products, setProducts] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editedProduct, setEditedProduct] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     axios
@@ -13,13 +14,26 @@ export default function AdminTable() {
       .catch(console.error);
   }, []);
 
+  // Extract unique categories + "All"
+  const categories = [
+    "All",
+    ...new Set(products.map((p) => p.category).filter(Boolean)),
+  ];
+
+  // Filter products by selected category
+  const filteredProducts =
+    selectedCategory === "All"
+      ? products
+      : products.filter((p) => p.category === selectedCategory);
+
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
 
     try {
       await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
       setProducts((prev) => prev.filter((p) => p._id !== id));
-    } catch (err) {
+    } catch {
       alert("Delete failed");
     }
   };
@@ -54,18 +68,34 @@ export default function AdminTable() {
       setProducts((prev) =>
         prev.map((p) => (p._id === id ? { ...p, ...updatedProduct } : p))
       );
-
       setEditingId(null);
-    } catch (err) {
+    } catch {
       alert("Edit failed");
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
+    <div className="max-w-full mx-auto p-4">
       <h2 className="text-2xl font-semibold mb-4">🧾 Admin Inventory Table</h2>
 
-      <div className=" border rounded-xl shadow-md">
+      {/* Category Tabs */}
+      <div className="mb-4 flex flex-wrap gap-2">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setSelectedCategory(cat)}
+            className={`px-4 py-1 rounded-lg border font-medium ${
+              selectedCategory === cat
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300"
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <div className="border rounded-xl shadow-md overflow-visible">
         <table className="w-full text-sm text-left text-gray-800">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
             <tr>
@@ -84,22 +114,21 @@ export default function AdminTable() {
                 "Total Sales",
                 "Actions",
               ].map((header, i) => (
-                <th key={i} className="px-4 py-3 whitespace-nowrap">
+                <th key={i} className="px-4 py-3 ">
                   {header}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {products.map((product, index) => (
+            {filteredProducts.map((product, index) => (
               <tr key={product._id} className="hover:bg-gray-50">
                 <td className="px-4 py-3">{index + 1}</td>
                 <td className="px-4 py-3">
                   <img
                     src={
                       product.images?.[0] ||
-                      product.imageUrl ||
-                      "https://via.placeholder.com/48"
+                      product.imageUrl || null
                     }
                     alt={product.name}
                     className="w-12 h-12 object-cover rounded"
@@ -139,7 +168,6 @@ export default function AdminTable() {
                         </td>
                       );
                   }
-
                   return (
                     <td key={i} className="px-4 py-3">
                       {editingId === product._id ? (
@@ -166,7 +194,6 @@ export default function AdminTable() {
                     </td>
                   );
                 })}
-                {/* Total Sales */}
                 <td className="px-4 py-3">
                   $
                   {(Number(product.sold) * Number(product.price) || 0).toFixed(

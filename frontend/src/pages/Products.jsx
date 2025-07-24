@@ -61,10 +61,22 @@ export default function Products() {
               <h3 className="text-lg font-semibold text-gray-800 mb-1">
                 {product.name}
               </h3>
-              <p className="text-sm text-gray-500 mb-1">{product.category}</p>
-              <p className="text-blue-600 font-bold text-base mb-4">
-                ${product.price}
+              <p className="text-sm text-gray-500 mb-1">
+                Category: {product.category}
               </p>
+              {product.size && product.size.trim() !== "" && (
+                <p className="text-sm text-gray-600">Size: {product.size}</p>
+              )}
+              {product.price && Number(product.price) > 0 && (
+                <p className="text-blue-600 font-bold text-base mb-4">
+                  Price: ${product.price}
+                  {product.priceType && product.priceType !== "Blank" && (
+                    <span className="text-xs text-gray-500 ml-1">
+                      ({product.priceType})
+                    </span>
+                  )}
+                </p>
+              )}
               <Link
                 to={`/product/${product._id}?page=${currentPage}`}
                 className="mt-auto inline-block bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition"
