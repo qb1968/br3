@@ -80,15 +80,23 @@ export default function ProductDetail() {
         {/* Product Images */}
         <div className="md:w-1/2">
           <div className="flex gap-4 overflow-x-auto">
-            {product.images?.map((url, index) => (
+            {product.images && product.images.length > 0 ? (
+              product.images.map((url, index) => (
+                <img
+                  key={index}
+                  src={url || "/images/placeholder.png"}
+                  alt={`Product ${index}`}
+                  className="rounded shadow object-cover w-full h-auto max-h-64 cursor-pointer"
+                  onClick={() => setEnlargedImage(url)}
+                />
+              ))
+            ) : (
               <img
-                key={index}
-                src={url}
-                alt={`Product ${index}`}
-                className="rounded shadow object-cover w-full h-auto max-h-64 cursor-pointer"
-                onClick={() => setEnlargedImage(url)} // ✅ Click to enlarge
+                src="/images/placeholder.png"
+                alt="No product available"
+                className="rounded shadow  w-full h-auto max-h-64"
               />
-            ))}
+            )}
           </div>
         </div>
 
@@ -98,14 +106,14 @@ export default function ProductDetail() {
             {product.name}
           </h1>
           <p className="text-sm uppercase text-gray-800 mb-1">
-           {product.condition}
+           Condition: {product.condition}
           </p>
 
           {product.price !== undefined &&
             product.price !== null &&
             product.price !== 0 && (
               <p className="text-sm font-semibold text-gray-800">
-                ${product.price}
+              Price:  ${product.price}
                 {product.priceType &&
                   product.priceType.toLowerCase() !== "blank" && (
                     <span className="text-xs text-gray-500 ml-1">
@@ -122,9 +130,9 @@ export default function ProductDetail() {
               </p>
             ))}
           </div>
-          <p className="text-sm uppercase text-gray-800 mb-1">{product.size}</p>
+          <p className="text-sm uppercase text-gray-800 mb-1">Size: {product.size}</p>
           <p className="text-sm uppercase text-gray-800 mb-1">
-            {product.color}
+          Color:  {product.color}
           </p>
 
           <button

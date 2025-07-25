@@ -20,7 +20,7 @@ export default function Products() {
       .then((res) => setProducts(res.data));
   }, []);
   const productsWithImages = products.filter(
-    (p) => Array.isArray(p.images) && p.images.length > 0
+    (p) => Array.isArray(p.images) 
   );
 
   const totalPages = Math.ceil(productsWithImages.length / productsPerPage);
@@ -53,7 +53,7 @@ export default function Products() {
             className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col overflow-hidden"
           >
             <img
-              src={product.images[0]}
+              src={product.images[0] || "/images/placeholder.png"}
               alt={product.name}
               className="w-full h-48 object-cover"
             />

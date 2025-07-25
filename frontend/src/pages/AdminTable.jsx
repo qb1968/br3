@@ -80,16 +80,14 @@ export default function AdminTable() {
   };
 
   return (
-    <div className="max-w-[1600px] mx-auto p-4">
+    <div className="w-full p-4">
       <h2 className="text-2xl font-semibold mb-4">🧾 Admin Inventory Table</h2>
 
       {/* Category Tabs */}
       <div className="mb-4 flex flex-wrap gap-2">
         {categories.map((cat) => {
           const label =
-            cat === "all"
-              ? "All"
-              : cat.charAt(0).toUpperCase() + cat.slice(1);
+            cat === "all" ? "All" : cat.charAt(0).toUpperCase() + cat.slice(1);
 
           return (
             <button
@@ -107,7 +105,7 @@ export default function AdminTable() {
         })}
       </div>
 
-      <div className="border rounded-xl shadow-md overflow-visible">
+      <div className="border rounded-xl shadow-md  ">
         <table className="w-full text-sm text-left text-gray-800">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
             <tr>
@@ -115,6 +113,7 @@ export default function AdminTable() {
                 "#",
                 "Image",
                 "Name",
+
                 "Size",
                 "Stock",
                 "Sold",
@@ -171,7 +170,9 @@ export default function AdminTable() {
                       return (
                         <td key={i} className="px-4 py-3">
                           $
-                          {(Number(product.stock) * Number(product.price) || 0).toFixed(2)}
+                          {(
+                            Number(product.stock) * Number(product.price) || 0
+                          ).toFixed(2)}
                         </td>
                       );
                   }
@@ -179,7 +180,11 @@ export default function AdminTable() {
                     <td key={i} className="px-4 py-3">
                       {editingId === product._id ? (
                         <input
-                          type={field === "name" || field === "color" ? "text" : "number"}
+                          type={
+                            field === "name" || field === "color"
+                              ? "text"
+                              : "number"
+                          }
                           value={editedProduct[field] ?? ""}
                           onChange={(e) =>
                             setEditedProduct((prev) => ({
@@ -198,9 +203,10 @@ export default function AdminTable() {
                   );
                 })}
                 <td className="px-4 py-3">
-                  ${(
-                    Number(product.sold) * Number(product.price) || 0
-                  ).toFixed(2)}
+                  $
+                  {(Number(product.sold) * Number(product.price) || 0).toFixed(
+                    2
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex space-x-2">

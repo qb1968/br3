@@ -11,12 +11,17 @@ export default function CategoryProducts() {
   useEffect(() => {
     window.scrollTo(0, 0);
     axios.get("https://br3-q37q.onrender.com/api/products").then((res) => {
+
       const filtered = res.data.filter(
         (p) => p.category && p.category.toLowerCase() === category
       );
       setProducts(filtered);
+      console.log("Filtered Products:", products);
+       
     });
   }, [category]);
+  const productsWithImages = products.filter((p) => Array.isArray(p.images));
+  
 
   const totalPages = Math.ceil(products.length / productsPerPage);
   const indexOfLast = currentPage * productsPerPage;
@@ -40,22 +45,35 @@ export default function CategoryProducts() {
         {currentProducts.map((product) => (
           <div
             key={product._id}
-            className="bg-white rounded-2xl shadow hover:shadow-lg transition duration-300 flex flex-col overflow-hidden"
+            className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col overflow-hidden"
           >
             <img
-              src={product.imageUrl}
+              src={product.images[0] || "/images/placeholder.png"}
               alt={product.name}
               className="w-full h-48 object-cover"
             />
             <div className="p-5 flex flex-col flex-grow">
-              <h2 className="text-lg font-semibold text-gray-800 mb-1">
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">
                 {product.name}
-              </h2>
-              <p className="text-blue-600 font-bold text-base mb-3">
-                ${product.price}
+              </h3>
+              <p className="text-sm text-gray-500 mb-1">
+                Category: {product.category}
               </p>
+              {product.size && product.size.trim() !== "" && (
+                <p className="text-sm text-gray-600">Size: {product.size}</p>
+              )}
+              {product.price && Number(product.price) > 0 && (
+                <p className="text-blue-600 font-bold text-base mb-4">
+                  Price: ${product.price}
+                  {product.priceType && product.priceType !== "Blank" && (
+                    <span className="text-xs text-gray-500 ml-1">
+                      ({product.priceType})
+                    </span>
+                  )}
+                </p>
+              )}
               <Link
-                to={`/product/${product._id}`}
+                to={`/product/${product._id}?page=${currentPage}`}
                 className="mt-auto inline-block bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >
                 View Details
