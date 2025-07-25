@@ -69,16 +69,19 @@ export default function Products() {
                   Size: {product.size}
                 </p>
               )}
-              {product.price && Number(product.price) > 0 && (
-                <p className="text-blue-600 font-bold text-base mb-4">
-                  Price: ${product.price}
-                  {product.priceType && product.priceType !== "Blank" && (
-                    <span className="text-xs text-gray-500 ml-1">
-                      ({product.priceType})
-                    </span>
-                  )}
-                </p>
-              )}
+              {product.price !== undefined &&
+                product.price !== null &&
+                product.price !== 0 && (
+                  <p className="text-sm font-semibold text-gray-800">
+                    Price: ${product.price}
+                    {product.priceType &&
+                      product.priceType.toLowerCase() !== "blank" && (
+                        <span className="text-xs text-gray-500 ml-1">
+                          ({product.priceType})
+                        </span>
+                      )}
+                  </p>
+                )}
               <Link
                 to={`/product/${product._id}?page=${currentPage}`}
                 className="mt-auto inline-block bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition"
