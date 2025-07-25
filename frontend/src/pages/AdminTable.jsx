@@ -5,7 +5,7 @@ export default function AdminTable() {
   const [products, setProducts] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editedProduct, setEditedProduct] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
     axios
@@ -14,21 +14,26 @@ export default function AdminTable() {
       .catch(console.error);
   }, []);
 
-  // Extract unique categories + "All"
+  // Normalize category strings (lowercase, trimmed)
   const categories = [
-    "All",
-    ...new Set(products.map((p) => p.category).filter(Boolean)),
+    "all",
+    ...new Set(
+      products
+        .map((p) => p.category?.trim().toLowerCase())
+        .filter(Boolean)
+    ),
   ];
 
-  // Filter products by selected category
+  // Filter by selected category
   const filteredProducts =
-    selectedCategory === "All"
+    selectedCategory === "all"
       ? products
-      : products.filter((p) => p.category === selectedCategory);
+      : products.filter(
+          (p) => p.category?.trim().toLowerCase() === selectedCategory
+        );
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
 
     try {
       await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
@@ -75,24 +80,31 @@ export default function AdminTable() {
   };
 
   return (
-    <div className="max-w-full mx-auto p-4">
+    <div className="max-w-[1600px] mx-auto p-4">
       <h2 className="text-2xl font-semibold mb-4">🧾 Admin Inventory Table</h2>
 
       {/* Category Tabs */}
       <div className="mb-4 flex flex-wrap gap-2">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-1 rounded-lg border font-medium ${
-              selectedCategory === cat
-                ? "bg-blue-600 text-white border-blue-600"
-                : "bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+        {categories.map((cat) => {
+          const label =
+            cat === "all"
+              ? "All"
+              : cat.charAt(0).toUpperCase() + cat.slice(1);
+
+          return (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-1 rounded-lg border font-medium ${
+                selectedCategory === cat
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300"
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
 
       <div className="border rounded-xl shadow-md overflow-visible">
@@ -114,7 +126,7 @@ export default function AdminTable() {
                 "Total Sales",
                 "Actions",
               ].map((header, i) => (
-                <th key={i} className="px-4 py-3 ">
+                <th key={i} className="px-4 py-3">
                   {header}
                 </th>
               ))}
@@ -126,10 +138,7 @@ export default function AdminTable() {
                 <td className="px-4 py-3">{index + 1}</td>
                 <td className="px-4 py-3">
                   <img
-                    src={
-                      product.images?.[0] ||
-                      product.imageUrl || null
-                    }
+                    src={product.images?.[0] || product.imageUrl || ""}
                     alt={product.name}
                     className="w-12 h-12 object-cover rounded"
                   />
@@ -137,12 +146,12 @@ export default function AdminTable() {
                 {[
                   "name",
                   "size",
-                  null, // stock (not editable)
+                  null, // stock
                   "sold",
-                  null, // balance (auto)
+                  null, // balance
                   "color",
                   "price",
-                  null, // total (auto)
+                  null, // total
                   "retail",
                 ].map((field, i) => {
                   if (field === null) {
@@ -162,9 +171,7 @@ export default function AdminTable() {
                       return (
                         <td key={i} className="px-4 py-3">
                           $
-                          {(
-                            Number(product.stock) * Number(product.price) || 0
-                          ).toFixed(2)}
+                          {(Number(product.stock) * Number(product.price) || 0).toFixed(2)}
                         </td>
                       );
                   }
@@ -172,11 +179,7 @@ export default function AdminTable() {
                     <td key={i} className="px-4 py-3">
                       {editingId === product._id ? (
                         <input
-                          type={
-                            field === "name" || field === "color"
-                              ? "text"
-                              : "number"
-                          }
+                          type={field === "name" || field === "color" ? "text" : "number"}
                           value={editedProduct[field] ?? ""}
                           onChange={(e) =>
                             setEditedProduct((prev) => ({
@@ -195,10 +198,9 @@ export default function AdminTable() {
                   );
                 })}
                 <td className="px-4 py-3">
-                  $
-                  {(Number(product.sold) * Number(product.price) || 0).toFixed(
-                    2
-                  )}
+                  ${(
+                    Number(product.sold) * Number(product.price) || 0
+                  ).toFixed(2)}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex space-x-2">
