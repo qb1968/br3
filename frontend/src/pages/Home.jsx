@@ -159,26 +159,22 @@ export default function Home() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-gray-600 to-gray-900 rounded-2xl overflow-hidden shadow-2xl mb-20">
-        <img
-          src="/images/newbr1.jpeg"
-          alt="Quality Building Supplies"
-          className="w-full h-[400px] object-cover opacity-90"
+      <section className="relative bg-gradient-to-r from-gray-600 to-gray-700 rounded-2xl overflow-hidden shadow-2xl mb-20">
+        <img src="/images/newbr1.jpeg" alt="" className="w-full  " />
+        <div
+          className="absolute inset-0 opacity-20 bg-cover bg-center"
+          style={{ backgroundImage: "" }}
         />
-
-        {/* Optional soft dark overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-30" />
-
-        <div className="relative p-12 sm:p-20 text-white text-center z-10">
+        <div className="relative p-12 sm:p-20 text-white text-center">
           <h1
-            className="text-4xl sm:text-5xl font-extrabold mb-4 drop-shadow"
+            className="text-4xl sm:text-5xl font-extrabold mb-4 text-black"
             data-aos="fade-down"
             data-aos-delay="200"
           >
             Quality Building Supplies
           </h1>
           <p
-            className="text-lg sm:text-xl max-w-3xl mx-auto font-semibold drop-shadow"
+            className="text-lg sm:text-xl max-w-3xl mx-auto text-black font-bold"
             data-aos="fade-up"
             data-aos-delay="400"
           >
