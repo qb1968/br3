@@ -80,7 +80,7 @@ export default function AdminTable() {
   };
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 ">
       <h2 className="text-2xl font-semibold mb-4">🧾 Admin Inventory Table</h2>
 
       {/* Category Tabs */}
@@ -105,7 +105,7 @@ export default function AdminTable() {
         })}
       </div>
 
-      <div className="border rounded-xl shadow-md  ">
+      <div className="border rounded-xl shadow-md flex justify-center">
         <table className="w-full text-sm text-left text-gray-800">
           <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
             <tr>
@@ -113,7 +113,6 @@ export default function AdminTable() {
                 "#",
                 "Image",
                 "Name",
-
                 "Size",
                 "Stock",
                 "Sold",
@@ -125,7 +124,7 @@ export default function AdminTable() {
                 "Total Sales",
                 "Actions",
               ].map((header, i) => (
-                <th key={i} className="px-4 py-3">
+                <th key={i} className="px-4 py-3 whitespace-nowrap">
                   {header}
                 </th>
               ))}
