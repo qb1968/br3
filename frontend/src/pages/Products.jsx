@@ -12,7 +12,7 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const initialPage = parseInt(queryParams.get("page")) || 1;
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const productsPerPage = 10;
+  const productsPerPage = 12;
 
   useEffect(() => {
     axios
@@ -64,8 +64,10 @@ export default function Products() {
               <p className="text-sm text-gray-500 mb-1">
                 Category: {product.category}
               </p>
-              {product.size && product.size.trim() !== "" && (
-                <p className="text-sm text-gray-600">Size: {product.size}</p>
+              {product.size && String(product.size) !== "0" && (
+                <p className="text-gray-700 font-medium">
+                  Size: {product.size}
+                </p>
               )}
               {product.price && Number(product.price) > 0 && (
                 <p className="text-blue-600 font-bold text-base mb-4">

@@ -106,14 +106,14 @@ export default function ProductDetail() {
             {product.name}
           </h1>
           <p className="text-sm uppercase text-gray-800 mb-1">
-           Condition: {product.condition}
+            Condition: {product.condition}
           </p>
 
           {product.price !== undefined &&
             product.price !== null &&
             product.price !== 0 && (
               <p className="text-sm font-semibold text-gray-800">
-              Price:  ${product.price}
+                Price: ${product.price}
                 {product.priceType &&
                   product.priceType.toLowerCase() !== "blank" && (
                     <span className="text-xs text-gray-500 ml-1">
@@ -130,11 +130,12 @@ export default function ProductDetail() {
               </p>
             ))}
           </div>
-          <p className="text-sm uppercase text-gray-800 mb-1">Size: {product.size}</p>
-          <p className="text-sm uppercase text-gray-800 mb-1">
-          Color:  {product.color}
-          </p>
-
+          
+          {product.color && String(product.color) !== "0" && (
+            <p className="text-sm uppercase text-gray-800 mb-1">
+              Color: {product.color}
+            </p>
+          )}
           <button
             onClick={handleCompareClick}
             className="bg-blue-600 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700"

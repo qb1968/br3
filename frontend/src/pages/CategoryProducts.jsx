@@ -6,7 +6,7 @@ export default function CategoryProducts() {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 8;
+  const productsPerPage = 12;
 
   useEffect(() => {
     window.scrollTo(0, 0);
