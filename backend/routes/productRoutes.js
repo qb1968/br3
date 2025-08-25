@@ -16,12 +16,29 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST new product with multiple images
+// POST new product
 router.post("/", upload.array("images", 10), async (req, res) => {
   try {
-    const { name, category, description, price, stock, condition, color,retail,type,priceType = "each",totalSales, total } =
-      req.body;
-    const images = req.files.map((file) => file.path); // cloudinary URLs
+    const {
+      name,
+      category,
+      description,
+      price,
+      stock,
+      condition,
+      color,
+      retail,
+      type,
+      priceType = "each",
+      totalSales,
+      total,
+      existingImages = [] // 👈 array of URLs passed from frontend
+    } = req.body;
+
+    // Collect new uploads (if any) + existing image URLs
+    const uploadedImages = req.files.map((file) => file.path); // new cloudinary URLs
+    const images = [...uploadedImages, ...existingImages]; // 👈 merge them
+
     const parsedPrice = parseFloat(price) || 0;
     const product = new Product({
       name,
@@ -38,7 +55,7 @@ router.post("/", upload.array("images", 10), async (req, res) => {
       totalSales,
       priceType,
     });
-    
+
     await product.save();
     res.status(201).json(product);
   } catch (err) {
@@ -46,11 +63,27 @@ router.post("/", upload.array("images", 10), async (req, res) => {
   }
 });
 
-// PUT update product and optionally images
+// PUT update product
 router.put("/:id", upload.array("images", 10), async (req, res) => {
   try {
-    const { name, category, description, price, stock, condition, color,sold,balance,total,retail,size,type,priceType } =
-      req.body;
+    const {
+      name,
+      category,
+      description,
+      price,
+      stock,
+      condition,
+      color,
+      sold,
+      balance,
+      total,
+      retail,
+      size,
+      type,
+      priceType,
+      existingImages = [] // 👈 keep previously selected Cloudinary URLs
+    } = req.body;
+
     const parsedPrice = parseFloat(price) || 0;
     const updatedFields = {
       name,
@@ -68,9 +101,11 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
       type,
       priceType,
     };
-     
-    if (req.files?.length > 0) {
-      updatedFields.images = req.files.map((file) => file.path);
+
+    // Merge new uploads + existing URLs
+    const uploadedImages = req.files?.map((file) => file.path) || [];
+    if (uploadedImages.length > 0 || existingImages.length > 0) {
+      updatedFields.images = [...uploadedImages, ...existingImages];
     }
 
     const product = await Product.findByIdAndUpdate(
@@ -90,7 +125,6 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
       .json({ message: "Failed to update product", error: err.message });
   }
 });
-
 // DELETE a product
 router.delete("/:id", async (req, res) => {
   try {
