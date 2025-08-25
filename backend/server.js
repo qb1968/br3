@@ -37,6 +37,10 @@ app.get("/api/compare-prices", async (req, res) => {
   }
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date() });
+});
+
 // Routes
 const productRoutes = require("./routes/productRoutes");
 const authRoutes = require("./routes/authRoutes");
