@@ -81,15 +81,16 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
       size,
       type,
       priceType,
-      existingImages = [] // 👈 keep previously selected Cloudinary URLs
+      existingImages = [],
     } = req.body;
 
-    const parsedPrice = parseFloat(price) || 0;
+    const uploadedImages = req.files?.map((file) => file.path) || [];
+
     const updatedFields = {
       name,
       category,
       description,
-      price: parsedPrice,
+      price: parseFloat(price) || 0,
       stock,
       condition,
       color,
@@ -100,13 +101,8 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
       size,
       type,
       priceType,
+      images: [...uploadedImages, ...existingImages],
     };
-
-    // Merge new uploads + existing URLs
-    const uploadedImages = req.files?.map((file) => file.path) || [];
-    if (uploadedImages.length > 0 || existingImages.length > 0) {
-      updatedFields.images = [...uploadedImages, ...existingImages];
-    }
 
     const product = await Product.findByIdAndUpdate(
       req.params.id,
@@ -114,9 +110,7 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
       { new: true }
     );
 
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
     res.json(product);
   } catch (err) {
@@ -125,6 +119,7 @@ router.put("/:id", upload.array("images", 10), async (req, res) => {
       .json({ message: "Failed to update product", error: err.message });
   }
 });
+
 // DELETE a product
 router.delete("/:id", async (req, res) => {
   try {
