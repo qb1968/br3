@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Admin2 from "./AdminTable";
+import BulkAssignImage from "../components/BulkAssignImage";
 
 export default function Admin() {
-  const [selectedTab, setSelectedTab] = useState("admin"); // "admin" or "admin2"
+  const [selectedTab, setSelectedTab] = useState("admin");
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]); // added categories state
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -21,14 +22,12 @@ export default function Admin() {
     images: [],
   });
   const [editProduct, setEditProduct] = useState(null);
-  const [imagePreviews, setImagePreviews] = useState([]);
-  const [newCategoryName, setNewCategoryName] = useState(""); // new state
+  const [imagePreviews, setImagePreviews] = useState([]); // new uploads
+  const [allImages, setAllImages] = useState([]); // existing Cloudinary images
+  const [selectedExistingImages, setSelectedExistingImages] = useState([]); // selected existing
+  const [newCategoryName, setNewCategoryName] = useState("");
   const [addingCategory, setAddingCategory] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
@@ -37,54 +36,34 @@ export default function Admin() {
     password: "",
   });
 
-   useEffect(() => {
-     const handleScroll = () => {
-       setShowScrollTop(window.scrollY > 300);
-     };
-     window.addEventListener("scroll", handleScroll);
-     return () => window.removeEventListener("scroll", handleScroll);
-   }, []);
+  // Scroll top button
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 300);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-   const scrollToTop = () => {
-     window.scrollTo({ top: 0, behavior: "smooth" });
-   };
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
-
- const handleAddCategory = async () => {
-   if (!newCategoryName.trim()) {
-     alert("Please enter a category name");
-     return;
-   }
-   try {
-     const res = await axios.post(
-       "https://br3-q37q.onrender.com/api/categories",
-       { name: newCategoryName.trim() }
-     );
-     // Add the new category to categories list
-     setCategories((prev) => [...prev, res.data]);
-     // Select the newly added category in form
-     setFormData((prev) => ({ ...prev, category: res.data.name }));
-     // Reset new category input & hide it
-     setNewCategoryName("");
-     setAddingCategory(false);
-   } catch (error) {
-     console.error("Failed to add category", error);
-     alert("Failed to add category");
-   }
- };
-
-
-  // Fetch categories & products after authentication
+  // Fetch products & categories & all images
   useEffect(() => {
     if (!isAuthenticated) return;
+
     axios
       .get("https://br3-q37q.onrender.com/api/categories")
       .then((res) => setCategories(res.data));
+
     axios
       .get("https://br3-q37q.onrender.com/api/products")
       .then((res) => setProducts(res.data));
+
+    axios
+      .get("https://br3-q37q.onrender.com/api/products/images/all")
+      .then((res) => setAllImages(res.data))
+      .catch((err) => console.error("Failed to fetch images", err));
   }, [isAuthenticated]);
 
+  // Login handler
   const handleLogin = (e) => {
     e.preventDefault();
     if (
@@ -93,9 +72,7 @@ export default function Admin() {
     ) {
       setIsAuthenticated(true);
       setShowLogin(false);
-    } else {
-      alert("Invalid credentials");
-    }
+    } else alert("Invalid credentials");
   };
 
   const fetchProducts = async () => {
@@ -107,54 +84,85 @@ export default function Admin() {
     const { name, value, files } = e.target;
     if (files) {
       setFormData((prev) => ({ ...prev, [name]: files }));
-
-      // Create preview URLs for new images
-      const previews = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      );
+      const previews = Array.from(files).map((f) => URL.createObjectURL(f));
       setImagePreviews(previews);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Toggle existing image selection
+  const toggleExistingImage = (url) => {
+    setSelectedExistingImages((prev) =>
+      prev.includes(url) ? prev.filter((i) => i !== url) : [...prev, url]
+    );
+  };
+
+  // Add new category
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) {
+      alert("Please enter a category name");
+      return;
+    }
     try {
-      const data = new FormData();
-      Object.entries(formData).forEach(([key, val]) => {
-        if (key !== "images") {
-          if (val !== null && val !== undefined) {
-            data.append(key, val);
-          }
-        }
-      });
-      if (formData.images && formData.images.length > 0) {
-        Array.from(formData.images).forEach((file) => {
-          data.append("images", file);
-        });
-      }
-
-      const url = editProduct
-        ? `https://br3-q37q.onrender.com/api/products/${editProduct._id}`
-        : "https://br3-q37q.onrender.com/api/products";
-      const method = editProduct ? "put" : "post";
-
-      await axios[method](url, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      setEditProduct(null);
-      resetForm();
-      fetchProducts();
-      setImagePreviews([]); // Clear previews on submit
-    } catch (error) {
-      console.error("Error saving product:", error);
-      alert("Failed to save product.");
+      const res = await axios.post(
+        "https://br3-q37q.onrender.com/api/categories",
+        { name: newCategoryName.trim() }
+      );
+      setCategories((prev) => [...prev, res.data]);
+      setFormData((prev) => ({ ...prev, category: res.data.name }));
+      setNewCategoryName("");
+      setAddingCategory(false);
+    } catch (err) {
+      console.error("Failed to add category", err);
+      alert("Failed to add category");
     }
   };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const data = new FormData();
+
+    // Append all fields except images
+    Object.entries(formData).forEach(([key, val]) => {
+      if (key !== "images" && val != null) data.append(key, val);
+    });
+
+    // Append new images
+    if (formData.images && formData.images.length > 0) {
+      Array.from(formData.images).forEach((file) => {
+        data.append("images", file);
+      });
+    }
+
+    // Append selected existing images
+    selectedExistingImages.forEach((url) => {
+      data.append("existingImages", url);
+    });
+
+    const url = editProduct
+      ? `https://br3-q37q.onrender.com/api/products/${editProduct._id}`
+      : "https://br3-q37q.onrender.com/api/products";
+    const method = editProduct ? "put" : "post";
+
+    await axios[method](url, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    // Reset form
+    setEditProduct(null);
+    resetForm();
+
+    // Dispatch custom event so Products page updates
+    window.dispatchEvent(new Event("productsUpdated"));
+  } catch (err) {
+    console.error("Error saving product:", err);
+    alert("Failed to save product.");
+  }
+};
+
 
   const resetForm = () => {
     setFormData({
@@ -162,6 +170,7 @@ export default function Admin() {
       category: "",
       description: "",
       price: "",
+      priceType: "Each",
       stock: "",
       condition: "",
       color: "",
@@ -171,6 +180,7 @@ export default function Admin() {
       images: [],
     });
     setImagePreviews([]);
+    setSelectedExistingImages([]);
   };
 
   const handleEdit = (product) => {
@@ -180,17 +190,18 @@ export default function Admin() {
       category: product.category || "",
       description: product.description || "",
       price: product.price || "",
-      priceType: product.priceType || "",
+      priceType: product.priceType || "Each",
       stock: product.stock || "",
       condition: product.condition || "",
       color: product.color || "",
       size: product.size || "",
       type: product.type || "",
       retail: product.retail || "",
-      images: [], // reset images so user can add new if desired
+      images: [],
     });
-    // Show existing images as previews
+
     setImagePreviews(product.images || []);
+    setSelectedExistingImages(product.images || []);
   };
 
   const handleDelete = async (id) => {
@@ -198,21 +209,18 @@ export default function Admin() {
       return;
     try {
       await axios.delete(`https://br3-q37q.onrender.com/api/products/${id}`);
-      fetchProducts(); // Refresh list after deletion
-    } catch (error) {
-      console.error("Failed to delete product", error);
+      fetchProducts();
+    } catch (err) {
+      console.error("Failed to delete product", err);
       alert("Failed to delete product");
     }
   };
 
-
-  // Cleanup preview URLs to avoid memory leaks
   useEffect(() => {
-    return () => {
+    return () =>
       imagePreviews.forEach((url) => {
         if (url.startsWith("blob:")) URL.revokeObjectURL(url);
       });
-    };
   }, [imagePreviews]);
 
   if (showLogin) {
@@ -277,7 +285,18 @@ export default function Admin() {
         >
           Admin 2
         </button>
+        <button
+          onClick={() => setSelectedTab("bulkAssign")}
+          className={`px-6 py-2 rounded ${
+            selectedTab === "bulkAssign"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-200 hover:bg-gray-300"
+          }`}
+        >
+          Bulk Assign Image
+        </button>
       </div>
+      {selectedTab === "bulkAssign" && <BulkAssignImage />}
 
       {selectedTab === "admin" && (
         <>
@@ -285,6 +304,7 @@ export default function Admin() {
             onSubmit={handleSubmit}
             className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6"
           >
+            {/* Name */}
             <input
               type="text"
               name="name"
@@ -294,7 +314,7 @@ export default function Admin() {
               className="border p-2 rounded"
             />
 
-            {/* Category dropdown with 'more...' last */}
+            {/* Category */}
             <select
               name="category"
               value={formData.category}
@@ -329,6 +349,7 @@ export default function Admin() {
                 + Add New Category
               </option>
             </select>
+
             {addingCategory && (
               <div className="sm:col-span-2 flex gap-2 items-center">
                 <input
@@ -357,6 +378,8 @@ export default function Admin() {
                 </button>
               </div>
             )}
+
+            {/* Price + PriceType */}
             <div className="flex gap-2 items-center">
               <input
                 type="text"
@@ -379,9 +402,10 @@ export default function Admin() {
                 <option value="Pair">Pair</option>
               </select>
             </div>
+
+            {/* Other fields */}
             {[
               "description",
-              // "price",
               "stock",
               "condition",
               "color",
@@ -400,6 +424,7 @@ export default function Admin() {
               />
             ))}
 
+            {/* File upload */}
             <input
               type="file"
               name="images"
@@ -408,20 +433,54 @@ export default function Admin() {
               className="sm:col-span-2"
             />
 
-            {/* Image Previews */}
+            {/* New uploads preview */}
             {imagePreviews.length > 0 && (
-              <div className="sm:col-span-2 flex flex-wrap gap-2">
-                {imagePreviews.map((src, idx) => (
-                  <img
-                    key={idx}
-                    src={src}
-                    alt={`preview-${idx}`}
-                    className="h-20 w-20 object-cover rounded border"
-                  />
-                ))}
+              <div className="sm:col-span-2 mb-4">
+                <h4 className="font-semibold mb-2">New Uploads:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {imagePreviews.map((src, idx) => (
+                    <img
+                      key={idx}
+                      src={src}
+                      alt={`new-${idx}`}
+                      className="h-20 w-20 object-cover rounded border ring-2 ring-green-400"
+                      title="New upload"
+                    />
+                  ))}
+                </div>
               </div>
             )}
 
+            {/* Existing images gallery */}
+            {allImages.length > 0 && (
+              <div className="sm:col-span-2 mb-4">
+                <h4 className="font-semibold mb-2">
+                  Select from existing images:
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {allImages.map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={img}
+                      alt={`existing-${idx}`}
+                      className={`h-20 w-20 object-cover rounded border cursor-pointer transition ${
+                        selectedExistingImages.includes(img)
+                          ? "ring-4 ring-blue-500"
+                          : "opacity-80 hover:opacity-100"
+                      }`}
+                      onClick={() => toggleExistingImage(img)}
+                      title={
+                        selectedExistingImages.includes(img)
+                          ? "Selected"
+                          : "Click to select"
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Submit / Cancel */}
             <div className="sm:col-span-2 flex justify-between">
               <button
                 type="submit"
@@ -444,6 +503,7 @@ export default function Admin() {
             </div>
           </form>
 
+          {/* Products table */}
           <table className="min-w-full border text-sm">
             <thead className="bg-gray-100">
               <tr>
@@ -471,17 +531,17 @@ export default function Admin() {
                   <td className="border px-2 py-1">{p.price}</td>
                   <td className="px-4 py-3">
                     <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleEdit(p)}
-                      className="px-3 py-1 text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
-                    >
-                      ✏️ Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(p._id)}
-                      className="px-3 py-1 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg"
-                    >
-                      🗑 Delete
+                      <button
+                        onClick={() => handleEdit(p)}
+                        className="px-3 py-1 text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(p._id)}
+                        className="px-3 py-1 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg"
+                      >
+                        🗑 Delete
                       </button>
                     </div>
                   </td>

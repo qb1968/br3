@@ -8,20 +8,34 @@ export default function CategoryProducts() {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
 
+  // Fetch products for the category
+  const fetchProducts = () => {
+    axios
+      .get("https://br3-q37q.onrender.com/api/products")
+      .then((res) => {
+        const filtered = res.data.filter(
+          (p) => p.category && p.category.toLowerCase() === category.toLowerCase()
+        );
+
+        // Ensure images is always an array
+        const normalized = filtered.map((p) => {
+          if (!p.images || p.images.length === 0) {
+            p.images = [];
+          } else if (!Array.isArray(p.images)) {
+            p.images = [p.images];
+          }
+          return p;
+        });
+
+        setProducts(normalized);
+      })
+      .catch((err) => console.error("Failed to fetch products:", err));
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    axios.get("https://br3-q37q.onrender.com/api/products").then((res) => {
-
-      const filtered = res.data.filter(
-        (p) => p.category && p.category.toLowerCase() === category
-      );
-      setProducts(filtered);
-      console.log("Filtered Products:", products);
-       
-    });
+    fetchProducts();
   }, [category]);
-  const productsWithImages = products.filter((p) => Array.isArray(p.images));
-  
 
   const totalPages = Math.ceil(products.length / productsPerPage);
   const indexOfLast = currentPage * productsPerPage;
@@ -48,7 +62,11 @@ export default function CategoryProducts() {
             className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col overflow-hidden"
           >
             <img
-              src={product.images[0] || "/images/placeholder.png"}
+              src={
+                product.images.length > 0
+                  ? product.images[0]
+                  : "/images/placeholder.png"
+              }
               alt={product.name}
               className="w-full h-48 object-cover"
             />
@@ -65,7 +83,7 @@ export default function CategoryProducts() {
               {product.price && Number(product.price) > 0 && (
                 <p className="text-blue-600 font-bold text-base mb-4">
                   Price: ${product.price}
-                  {product.priceType && product.priceType !== "Blank" && (
+                  {product.priceType && product.priceType.toLowerCase() !== "blank" && (
                     <span className="text-xs text-gray-500 ml-1">
                       ({product.priceType})
                     </span>

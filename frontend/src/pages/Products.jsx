@@ -17,17 +17,26 @@ export default function Products() {
   useEffect(() => {
     axios
       .get("https://br3-q37q.onrender.com/api/products")
-      .then((res) => setProducts(res.data));
+      .then((res) => {
+        // Normalize images for every product
+        const normalized = res.data.map((p) => {
+          if (!p.images) {
+            p.images = [];
+          } else if (!Array.isArray(p.images)) {
+            p.images = [p.images];
+          }
+          return p;
+        });
+        console.log("Fetched products:", res.data);
+        setProducts(normalized);
+      })
+      .catch((err) => console.error("Failed to fetch products:", err));
   }, []);
-  const productsWithImages = products.filter(
-    (p) => Array.isArray(p.images) 
-  );
 
-  const totalPages = Math.ceil(productsWithImages.length / productsPerPage);
+  const totalPages = Math.ceil(products.length / productsPerPage);
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
-  const currentProducts = productsWithImages.slice(indexOfFirst, indexOfLast);
-  
+  const currentProducts = products.slice(indexOfFirst, indexOfLast);
 
   const goToPage = (page) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -37,15 +46,12 @@ export default function Products() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen">
-      {/* Categories */}
       <Categories />
 
-      {/* Page Heading */}
       <h1 className="text-4xl font-extrabold text-center text-gray-900 mt-8 mb-12">
         All Products
       </h1>
 
-      {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {currentProducts.map((product) => (
           <div
@@ -53,7 +59,11 @@ export default function Products() {
             className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col overflow-hidden"
           >
             <img
-              src={product.images[0] || "/images/placeholder.png"}
+              src={
+                product.images.length > 0
+                  ? product.images[0]
+                  : "/images/placeholder.png"
+              }
               alt={product.name}
               className="w-full h-48 object-cover"
             />
@@ -69,19 +79,17 @@ export default function Products() {
                   Size: {product.size}
                 </p>
               )}
-              {product.price !== undefined &&
-                product.price !== null &&
-                product.price !== 0 && (
-                  <p className="text-sm font-semibold text-gray-800">
-                    Price: ${product.price}
-                    {product.priceType &&
-                      product.priceType.toLowerCase() !== "blank" && (
-                        <span className="text-xs text-gray-500 ml-1">
-                          ({product.priceType})
-                        </span>
-                      )}
-                  </p>
-                )}
+              {product.price && Number(product.price) > 0 && (
+                <p className="text-sm font-semibold text-gray-800">
+                  Price: ${product.price}
+                  {product.priceType &&
+                    product.priceType.toLowerCase() !== "blank" && (
+                      <span className="text-xs text-gray-500 ml-1">
+                        ({product.priceType})
+                      </span>
+                    )}
+                </p>
+              )}
               <Link
                 to={`/product/${product._id}?page=${currentPage}`}
                 className="mt-auto inline-block bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -93,7 +101,6 @@ export default function Products() {
         ))}
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center mt-12 flex-wrap gap-3">
           {Array.from({ length: totalPages }, (_, i) => (
@@ -112,7 +119,6 @@ export default function Products() {
         </div>
       )}
 
-      {/* Back to Top */}
       <BackToTop />
     </div>
   );
