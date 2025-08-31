@@ -35,6 +35,7 @@
 
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { HelmetProvider } from "@dr.pogodin/react-helmet";
 import App from "./App.jsx";
 import "./index.css";
 
@@ -42,8 +43,9 @@ import "./index.css";
 ReactDOM.createRoot(document.getElementById("root")).render(
   
     <BrowserRouter>
-      
-      <App />
+      <HelmetProvider>
+    <App />
+    </HelmetProvider>
     </BrowserRouter>
- 
+
 );

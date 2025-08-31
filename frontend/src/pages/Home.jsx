@@ -116,6 +116,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "@dr.pogodin/react-helmet";
 import Categories from "./Categories";
 import ProductCard from "../components/ProductCard";
 import "slick-carousel/slick/slick.css";
@@ -157,6 +158,22 @@ export default function Home() {
   }, []);
 
   return (
+  <>
+    {/* ✅ Dynamic SEO Meta Tags */}
+      <Helmet>
+        <title>Builders Re-Source | Quality Building Supplies</title>
+        <meta
+          name="description"
+          content="Burlington's trusted source for overstock building supplies. High-quality materials at unbeatable prices – from windows to siding, we’ve got your next project covered."
+        />
+        <meta property="og:title" content="Builders Re-Source | Quality Building Supplies" />
+        <meta
+          property="og:description"
+          content="Shop siding, windows, doors, and more at unbeatable prices."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/images/newbr1.jpeg" />
+      </Helmet>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 overflow-hidden">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-gray-600 to-gray-700 rounded-2xl overflow-hidden shadow-2xl mb-20">
@@ -247,6 +264,7 @@ export default function Home() {
           </p>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }
