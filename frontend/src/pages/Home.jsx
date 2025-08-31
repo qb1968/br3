@@ -249,7 +249,7 @@ export default function Home() {
           <p className="text-gray-700 leading-relaxed">
             We carry a broad range of inventory including fiber cement, vinyl
             siding, shutters, doors, and energy-efficient windows. Inventory is
-            updated regularly, so check back often or stop in today!
+            updated regularly, so check back often!
           </p>
         </div>
         <div data-aos="fade-left">
