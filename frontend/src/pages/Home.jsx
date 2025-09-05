@@ -158,15 +158,23 @@ export default function Home() {
   }, []);
 
   return (
-  <>
-    {/* ✅ Dynamic SEO Meta Tags */}
+    <>
+      {/* ✅ Dynamic SEO Meta Tags */}
       <Helmet>
         <title>Builders Re-Source | Quality Building Supplies</title>
         <meta
           name="description"
           content="Burlington's trusted source for overstock building supplies. High-quality materials at unbeatable prices – from windows to siding, we’ve got your next project covered."
         />
-        <meta property="og:title" content="Builders Re-Source | Quality Building Supplies" />
+        <meta
+          name="keywords"
+          content="building supplies Burlington, Alamance County building supplies, North Carolina building materials, overstock building materials, discount windows Burlington, siding Burlington NC, fiber cement siding North Carolina, soffit Alamance County, shutters Burlington NC, surplus building materials NC, discount doors Alamance County, energy-efficient windows North Carolina, home improvement supplies Burlington NC, construction materials Alamance County, discount building supplies North Carolina"
+        />
+
+        <meta
+          property="og:title"
+          content="Builders Re-Source | Quality Building Supplies"
+        />
         <meta
           property="og:description"
           content="Shop siding, windows, doors, and more at unbeatable prices."
@@ -174,96 +182,96 @@ export default function Home() {
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/newbr1.jpeg" />
       </Helmet>
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 overflow-hidden">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-gray-600 to-gray-700 rounded-2xl overflow-hidden shadow-2xl mb-20">
-        <img src="/images/newbr1.jpeg" alt="" className="w-full  " />
-        <div
-          className="absolute inset-0 opacity-20 bg-cover bg-center"
-          style={{ backgroundImage: "" }}
-        />
-        <div className="relative p-12 sm:p-20 text-white text-center">
-          <h1
-            className="text-4xl sm:text-5xl font-extrabold mb-4 text-black"
-            data-aos="fade-down"
-            data-aos-delay="200"
-          >
-            Quality Building Supplies
-          </h1>
-          <p
-            className="text-lg sm:text-xl max-w-3xl mx-auto text-black font-bold"
-            data-aos="fade-up"
-            data-aos-delay="400"
-          >
-            🛠️ Burlington's trusted source for overstock building supplies.
-            High-quality materials at unbeatable prices – from windows to
-            siding, we’ve got your next project covered.
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 overflow-hidden">
+        {/* Hero Section */}
+        <section className="relative bg-gradient-to-r from-gray-600 to-gray-700 rounded-2xl overflow-hidden shadow-2xl mb-20">
+          <img src="/images/newbr1.jpeg" alt="" className="w-full  " />
+          <div
+            className="absolute inset-0 opacity-20 bg-cover bg-center"
+            style={{ backgroundImage: "" }}
+          />
+          <div className="relative p-12 sm:p-20 text-white text-center">
+            <h1
+              className="text-4xl sm:text-5xl font-extrabold mb-4 text-black"
+              data-aos="fade-down"
+              data-aos-delay="200"
+            >
+              Quality Building Supplies
+            </h1>
+            <p
+              className="text-lg sm:text-xl max-w-3xl mx-auto text-black font-bold"
+              data-aos="fade-up"
+              data-aos-delay="400"
+            >
+              🛠️ Burlington's trusted source for overstock building supplies.
+              High-quality materials at unbeatable prices – from windows to
+              siding, we’ve got your next project covered.
+            </p>
+          </div>
+        </section>
+
+        {/* Categories (optional) */}
+        <Categories />
+
+        {/* About / Intro Section */}
+        <section className="bg-white p-8 rounded-xl shadow-md mb-16">
+          <h2 className="text-3xl font-bold mb-4 text-gray-800 text-center">
+            Why Choose Builders Re-Source?
+          </h2>
+          <p className="text-gray-600 max-w-4xl mx-auto text-center leading-relaxed">
+            We specialize in high-quality overstock building supplies sourced
+            directly from trusted manufacturers. Whether you're updating your
+            home or starting a new build, our curated inventory and expert staff
+            help you save without sacrificing quality.
           </p>
-        </div>
-      </section>
+        </section>
 
-      {/* Categories (optional) */}
-      <Categories />
+        {/* Featured Products */}
+        <section className="bg-white p-8 rounded-xl shadow-md mb-16">
+          <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+            Featured Products
+          </h2>
+          <Slider {...settings}>
+            {products.slice(0, 10).map((product) => (
+              <div key={product._id} className="px-2">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </Slider>
+          <div className="text-center mt-8">
+            <Link
+              to="/products"
+              className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+            >
+              See All Products
+            </Link>
+          </div>
+        </section>
 
-      {/* About / Intro Section */}
-      <section className="bg-white p-8 rounded-xl shadow-md mb-16">
-        <h2 className="text-3xl font-bold mb-4 text-gray-800 text-center">
-          Why Choose Builders Re-Source?
-        </h2>
-        <p className="text-gray-600 max-w-4xl mx-auto text-center leading-relaxed">
-          We specialize in high-quality overstock building supplies sourced
-          directly from trusted manufacturers. Whether you're updating your home
-          or starting a new build, our curated inventory and expert staff help
-          you save without sacrificing quality.
-        </p>
-      </section>
-
-      {/* Featured Products */}
-      <section className="bg-white p-8 rounded-xl shadow-md mb-16">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-          Featured Products
-        </h2>
-        <Slider {...settings}>
-          {products.slice(0, 10).map((product) => (
-            <div key={product._id} className="px-2">
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </Slider>
-        <div className="text-center mt-8">
-          <Link
-            to="/products"
-            className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
-          >
-            See All Products
-          </Link>
-        </div>
-      </section>
-
-      {/* Highlight Section */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-10 bg-blue-50 p-10 rounded-xl shadow mb-20">
-        <div data-aos="fade-right">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">
-            Wide Variety
-          </h3>
-          <p className="text-gray-700 leading-relaxed">
-            We carry a broad range of inventory including fiber cement, vinyl
-            siding, shutters, doors, and energy-efficient windows. Inventory is
-            updated regularly, so check back often!
-          </p>
-        </div>
-        <div data-aos="fade-left">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">
-            Guaranteed Quality
-          </h3>
-          <p className="text-gray-700 leading-relaxed">
-            Every product we stock is vetted for durability and backed by
-            manufacturers’ warranties. We're committed to delivering lasting
-            value and expert customer support for every homeowner and
-            contractor.
-          </p>
-        </div>
-      </section>
+        {/* Highlight Section */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-10 bg-blue-50 p-10 rounded-xl shadow mb-20">
+          <div data-aos="fade-right">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              Wide Variety
+            </h3>
+            <p className="text-gray-700 leading-relaxed">
+              We carry a broad range of inventory including fiber cement, vinyl
+              siding, shutters, doors, and energy-efficient windows. Inventory
+              is updated regularly, so check back often!
+            </p>
+          </div>
+          <div data-aos="fade-left">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              Guaranteed Quality
+            </h3>
+            <p className="text-gray-700 leading-relaxed">
+              Every product we stock is vetted for durability and backed by
+              manufacturers’ warranties. We're committed to delivering lasting
+              value and expert customer support for every homeowner and
+              contractor.
+            </p>
+          </div>
+        </section>
       </div>
     </>
   );
