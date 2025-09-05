@@ -28,10 +28,10 @@ app.get("/sitemap.xml", async (req, res) => {
 
     // Static pages
     const staticPages = [
-      { url: "https://yourdomain.com/", priority: "1.0" },
-      { url: "https://yourdomain.com/products", priority: "0.9" },
-      { url: "https://yourdomain.com/about", priority: "0.7" },
-      { url: "https://yourdomain.com/contact", priority: "0.7" },
+      { url: "https://buildersre-source.com/", priority: "1.0" },
+      { url: "https://buildersre-source.com/products", priority: "0.9" },
+      { url: "https://buildersre-source.com/about", priority: "0.7" },
+      { url: "https://buildersre-source.com/contact", priority: "0.7" },
     ];
 
     // Build static URLs
@@ -51,7 +51,7 @@ app.get("/sitemap.xml", async (req, res) => {
       .map(
         (p) => `
       <url>
-        <loc>https://yourdomain.com/products/${p._id}</loc>
+        <loc>https://buildersre-source.com/products/${p._id}</loc>
         <lastmod>${today}</lastmod>
         <priority>0.8</priority>
       </url>`
