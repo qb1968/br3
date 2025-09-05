@@ -168,7 +168,7 @@ export default function Home() {
         />
         <meta
           name="keywords"
-          content="building supplies, builders resource llc, building supplies Burlington, Alamance County building supplies, North Carolina building materials, overstock building materials, discount windows Burlington, siding Burlington NC, fiber cement siding North Carolina, soffit Alamance County, shutters Burlington NC, surplus building materials NC, discount doors Alamance County, energy-efficient windows North Carolina, home improvement supplies Burlington NC, construction materials Alamance County, discount building supplies North Carolina"
+          content="discount building supplies,building supplies, builders re-source llc, building supplies Burlington, Alamance County building supplies, North Carolina building materials, overstock building materials, discount windows Burlington, siding Burlington NC, fiber cement siding North Carolina, soffit Alamance County, shutters Burlington NC, surplus building materials NC, discount doors Alamance County, energy-efficient windows North Carolina, home improvement supplies Burlington NC, construction materials Alamance County, discount building supplies North Carolina"
         />
 
         <meta
