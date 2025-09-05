@@ -1,4 +1,4 @@
 User-agent: *
-Disallow:
+Allow: /
 
-Sitemap: https://builders-resource.com/sitemap.xml
+Sitemap: https://buildersre-source.com/sitemap.xml
