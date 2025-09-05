@@ -164,7 +164,7 @@ export default function Home() {
         <title>Builders Re-Source | Quality Building Supplies</title>
         <meta
           name="description"
-          content="Burlington's trusted source for overstock building supplies. High-quality materials at unbeatable prices – from windows to siding, we’ve got your next project covered."
+          content="Burlington's trusted source for building supplies. High-quality materials at unbeatable prices – from windows to siding, we’ve got your next project covered."
         />
         <meta
           name="keywords"
