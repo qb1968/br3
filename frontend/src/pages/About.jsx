@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Helmet } from "@dr.pogodin/react-helmet";
+
 export default function About() {
   useEffect(() => {
     AOS.init({ duration: 800, once: true });

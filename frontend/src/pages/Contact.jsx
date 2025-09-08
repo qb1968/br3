@@ -1,8 +1,31 @@
 import React from "react";
+import { Helmet } from "@dr.pogodin/react-helmet";
 
 export default function Contact() {
   return (
     <main className="bg-gray-50 min-h-screen">
+      <Helmet>
+        <title>Contact Us | Builders Re-Source</title>
+        <meta
+          name="description"
+          content="Get in touch with Builders Re-Source for affordable, high-quality building supplies. Visit us in Burlington, NC or send us a message online."
+        />
+        <meta
+          name="keywords"
+          content="contact Builders Re-Source, Burlington NC building supplies, Alamance County construction materials, North Carolina discount windows, siding Burlington NC, home improvement supplies Alamance County"
+        />
+        <meta property="og:title" content="Contact Builders Re-Source" />
+        <meta
+          property="og:description"
+          content="Reach out to Builders Re-Source in Burlington, NC for all your building supply needs. Affordable windows, siding, doors, and more."
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://buildersre-source.com/contact"
+        />
+        <meta property="og:image" content="/images/newbr1.jpeg" />
+      </Helmet>
       {/* Hero Section */}
       <section className="text-center py-24 bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-xl rounded-b-3xl">
         <h1 className="text-5xl font-extrabold mb-4">Contact Us</h1>
