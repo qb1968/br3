@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-
+import { Helmet } from "@dr.pogodin/react-helmet";
 export default function About() {
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
@@ -9,6 +9,25 @@ export default function About() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 min-h-screen">
+      <Helmet>
+        <title>About Us | Builders Re-Source</title>
+        <meta
+          name="description"
+          content="Learn about Builders Re-Source, your trusted partner in construction and renovation. We provide affordable, high-quality building supplies across Burlington, Alamance County, and North Carolina."
+        />
+        <meta
+          name="keywords"
+          content="about Builders Re-Source, Burlington building supplies, Alamance County building materials, North Carolina surplus building products, discount construction supplies"
+        />
+        <meta property="og:title" content="About Us | Builders Re-Source" />
+        <meta
+          property="og:description"
+          content="At Builders Re-Source, we help homeowners and contractors access premium building supplies at affordable prices."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://buildersre-source.com/about" />
+        <meta property="og:image" content="/images/newbr1.jpeg" />
+      </Helmet>
       {/* Header Section */}
       <section
         className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl shadow-lg p-10 text-center"
