@@ -170,7 +170,7 @@ export default function Home() {
           name="keywords"
           content="discount building supplies,building supplies, builders re-source llc, building supplies Burlington, Alamance County building supplies, North Carolina building materials, overstock building materials, discount windows Burlington, siding Burlington NC, fiber cement siding North Carolina, soffit Alamance County, shutters Burlington NC, surplus building materials NC, discount doors Alamance County, energy-efficient windows North Carolina, home improvement supplies Burlington NC, construction materials Alamance County, discount building supplies North Carolina"
         />
-
+        <link rel="canonical" href="https://buildersre-source.com/" />
         <meta
           property="og:title"
           content="Builders Re-Source | Quality Building Supplies"
@@ -181,6 +181,25 @@ export default function Home() {
         />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/newbr1.jpeg" />
+        {/* 🔹 Local Business Schema (JSON-LD) */}
+        <script type="application/ld+json">{`
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Builders Re-Source",
+      "image": "https://buildersre-source.com/images/newbr1.jpeg",
+      "url": "https://buildersre-source.com",
+      "telephone": "+1-336-459-2340",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "3109 Sartin Rd.",
+        "addressLocality": "Burlington",
+        "addressRegion": "NC",
+        "postalCode": "27217",
+        "addressCountry": "US"
+      }
+    }
+  `}</script>
       </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 overflow-hidden">
         {/* Hero Section */}
