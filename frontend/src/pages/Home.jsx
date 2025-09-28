@@ -164,11 +164,11 @@ export default function Home() {
         <title>Builders Re-Source | Quality Building Supplies</title>
         <meta
           name="description"
-          content="Burlington's trusted source for building supplies. High-quality materials at unbeatable prices – from windows to siding, we’ve got your next project covered."
+          content="Burlington's trusted source for building supplies. High-quality materials at unbeatable prices – from windows to siding, we’ve got your next project covered. Building materials, exterior building materials, discount building supplies, building supplies Burlington, Alamance County building supplies, North Carolina building materials, overstock building materials, discount windows Burlington, siding Burlington NC, fiber cement siding North Carolina, soffit Alamance County, shutters Burlington NC, surplus building materials NC, discount doors Alamance County, energy-efficient windows North Carolina, home improvement supplies Burlington NC, construction materials Alamance County, discount building supplies North Carolina. "
         />
         <meta
           name="keywords"
-          content="discount building supplies,building supplies, builders re-source llc, building supplies Burlington, Alamance County building supplies, North Carolina building materials, overstock building materials, discount windows Burlington, siding Burlington NC, fiber cement siding North Carolina, soffit Alamance County, shutters Burlington NC, surplus building materials NC, discount doors Alamance County, energy-efficient windows North Carolina, home improvement supplies Burlington NC, construction materials Alamance County, discount building supplies North Carolina"
+          content="building materials, exterior building materials, discount building supplies,building supplies, builders re-source llc, building supplies Burlington, Alamance County building supplies, North Carolina building materials, overstock building materials, discount windows Burlington, siding Burlington NC, fiber cement siding North Carolina, soffit Alamance County, shutters Burlington NC, surplus building materials NC, discount doors Alamance County, energy-efficient windows North Carolina, home improvement supplies Burlington NC, construction materials Alamance County, discount building supplies North Carolina"
         />
         <link rel="canonical" href="https://buildersre-source.com/" />
         <meta
